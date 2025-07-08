@@ -21,8 +21,12 @@ EXPRESION1 ::= <FBASE> | <FCREADA>
 ```
 LISTA ::= '['<ELEMENTOS>']'
 ELEMENTOS ::= <ELEMENTO> <RESTOELEMENTOS> | ε
-RESTOELEMENTOS ::= ', ' <ELEMENTO> <RESTOELEMENTOS> | ε
+RESTOELEMENTOS ::= ', '<ELEMENTO> <RESTOELEMENTOS> | ε
 ELEMENTO ::= <DIGITOS>
+```
+---
+## Definición de reconocimiento de números naturales
+```
 DIGITOS ::= <DIGITO><DIGITOS> | <DIGITO>
 DIGITO ::= 1 | 2| 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
 ```

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include "tokenizer.h"
 #include "parser.h"
+#include "processor.h"
 
 int main(void) {
     // Título
