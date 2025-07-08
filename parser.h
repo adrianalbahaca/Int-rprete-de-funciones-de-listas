@@ -41,7 +41,7 @@ string getInput(string message);
 TokenList tokenize(string tokens);
 
 /**
- * parse: TokenList -> ??
+ * parse: TokenList -> ASA
  * TODO: Crear Árbol de Síntax Abstracto y hacer la función 'parse', que recibe la lista de tokens
  * y crea el árbol a partir de la gramática determinada
  */
