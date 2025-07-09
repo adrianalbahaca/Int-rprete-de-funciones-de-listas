@@ -16,7 +16,7 @@ int main(void) {
          * TODO: Crear una función que recibe el input y tokeniza cada elemento, agarrando
          * cada error que se pueda formar, retornando una lista de tokens
          */
-        TokenList *tokens = tokenizate(command);
+        tokenList tokens = tokenizate(command);
 
         /**
          * TODO: Crear una función que recibe la lista de tokens y lo convierte en un

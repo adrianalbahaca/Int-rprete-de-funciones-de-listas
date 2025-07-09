@@ -14,18 +14,18 @@ Se construye funciones usando funciones que se tienen con el comando deff
 Ej: deff f = 0d 0i Sd Sd Si 0d Sd; -> [2, 1, 1]
 
 ## Repetición:
-Usando una función de listas, se puede definir una función recursiva, notada como
-    <f> [x, X, y] = {[x, X, y] si x != y, <f>(f[x, X, y])}
-    (x, y son elementos y X es una lista, posiblemente vacía)
+Usando una función de listas, se puede definir una función recursiva, notada como:  
+: <f> [x, X, y] = {[x, X, y] si x != y, <f>(f[x, X, y])}
+(x, y son elementos y X es una lista, posiblemente vacía)
 
 ## Definición de listas:
-Se pueden definir listas de forma directa usando el comando defl
-Ej: defl L1 = [0, 2, 4 ,8];
+Se pueden definir listas de forma directa usando el comando defl  
+Ej: `defl L1 = [0, 2, 4 ,8];`
 
 ## Búsqueda:
 El comando search genera una función de listas que convierte a la lista L1 en la lista L2
-Ej: L1 = [0, 1, 2]; L2 = [1, 2, 3];
-search L1 L2; -> Si Md Si Md Si Md
+Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3];`
+`search L1 L2; -> Si Md Si Md Si Md;`
 (Notar que pueden haber pares de listas que no tengan solución)
 
 # Cosas a hacer:
