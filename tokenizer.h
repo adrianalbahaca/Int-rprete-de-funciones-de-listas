@@ -3,20 +3,9 @@
 
 typedef char* string;
 
-/**
- * Se declara la lista de tokens como una lista simplemente enlazada,
- * y una estructura que apunta al principio y final
- */
+typedef struct _tokenNodo tokenNodo;
 
-typedef struct _tokenNodo {
-    string token;
-    struct _tokenNodo *sig;
-} tokenNodo;
-
-typedef struct _tokenList {
-    tokenNodo *first;
-    tokenNodo *last;
-} tokenList;
+typedef struct _tokenList* tokenList;
 
 /**
  * getInput: string -> string
@@ -28,6 +17,6 @@ string getInput(string mensaje);
  * tokenize: string -> tokenList
  * Tokeniza cada parte del string en una lista de tokens, para después ser procesado
  */
-tokenList tokenize(string input);
+tokenList tokenize(string tokens);
 
 #endif /* __TOKENIZER__ */

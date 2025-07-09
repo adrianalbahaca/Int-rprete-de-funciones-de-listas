@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "tokenizer.h"
-#include "parser.h"
-#include "processor.h"
 
 int main(void) {
     // Título
@@ -11,16 +9,8 @@ int main(void) {
     // Se usa un booleano para indicar cuándo se sale del shell
     bool quit = true;
     while(quit) {
-        /**
-         * TODO: Crear una función que reciba un string para mostrarlo en pantalla, y retorne
-         * el string ingresado por el usuario, sin importar su largo
-         */
+        
         string command = getInput("==> ");
-
-        if (/* Comando es quit */) {
-            quit = false;
-            break;
-        }
 
         /**
          * TODO: Crear una función que recibe el input y tokeniza cada elemento, agarrando
