@@ -10,12 +10,12 @@ Este proyecto trabaja con funciones de lista, analizando el input de un usuario,
  - `Dd`: Elimina el valor del extremo derecho de una lista (Lista no vacía)
 
 ## Composición:
-Se construye funciones usando funciones que se tienen con el comando deff  
+Se construye funciones de listas, a partir de funciones de lista, con el comando deff  
 Ej: `deff f = 0d 0i Sd Sd Si 0d Sd; -> [2, 1, 1]`
 
 ## Repetición:
-Usando una función de listas, se puede definir una función recursiva, notada como:  
-`<f> [x, X, y] = {[x, X, y] si x != y, <f>(f[x, X, y])}` (x, y son elementos y X es una lista, posiblemente vacía)
+Usando una función de listas, se puede definir una función repetición, notada como:  
+`<f> [x, X, y] = {[x, X, y] si x == y, <f>(f[x, X, y]) si x != y}` (x, y son elementos y X es una lista, posiblemente vacía)
 
 ## Definición de listas:
 Se pueden definir listas de forma directa usando el comando defl   
@@ -28,7 +28,9 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search L1 L2; -> Si Md Si Md Si Md;`
 
 # Cosas a hacer:
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
- - [ ] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta
- - [ ] Buscar una forma de guardar cada función creada por el usuario <!-- Me recuerda al parser de Python -->
- - [ ] Crear las funciones base y su aplicación
- - [ ] Crear la función definición y su aplicación con el input del usuario
+ - [ ] Crear una función que tokenize cada comando que escriba el usuario <!-- Requiere pocas funciones -->
+ - [ ] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
+ - [ ] Definir y guardar funciones primitivas <!-- Enum? -->
+ - [ ] Definir la función composición, que guarda funciones de listas, para después usarlas más adelante <!-- Requerirá algún tipo de recursión -->
+ - [ ] Definir una definición de listas directa <!-- Simple -->
+ - [ ] Definiir la búsqueda entre pares de listas <!-- Esta parece la parte más compleja -->
