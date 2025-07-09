@@ -15,10 +15,11 @@ Ej: `deff f = 0d 0i Sd Sd Si 0d Sd; -> [2, 1, 1]`
 
 ## Repetición:
 Usando una función de listas, se puede definir una función repetición, notada como:  
-`<f> [x, X, y] = {[x, X, y] si x == y, <f>(f[x, X, y]) si x != y}` (x, y son elementos y X es una lista, posiblemente vacía)
+`<f> [x, X, y] = {[x, X, y] si x == y, <f>(f[x, X, y]) si x != y}` (x, y son elementos y X es una lista, posiblemente vacía)  
+Ej: `deff Mi = 0i <Si> Dd;`
 
 ## Definición de listas:
-Se pueden definir listas de forma directa usando el comando defl   
+Se pueden definir listas de forma directa usando el comando `defl`   
 Ej: `defl L1 = [0, 2, 4 ,8];`
 
 ## Búsqueda:
