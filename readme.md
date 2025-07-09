@@ -29,6 +29,6 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search L1 L2; -> Si Md Si Md Si Md;`
 # Cosas a hacer:
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
  - [ ] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta
- - [ ] Buscar una forma de guardar cada función creada por el usuario ~(Me recuerda al parser de Python)~
+ - [ ] Buscar una forma de guardar cada función creada por el usuario <!-- Me recuerda al parser de Python -->
  - [ ] Crear las funciones base y su aplicación
  - [ ] Crear la función definición y su aplicación con el input del usuario
