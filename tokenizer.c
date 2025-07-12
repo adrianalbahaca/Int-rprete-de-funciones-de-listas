@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include "glist.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,96 +10,155 @@
  * Por convección y practicidad, se declara char* como string
  */
 
-typedef char* string;
+typedef char *String;
 
 /**
- * Se declara la lista de tokens como una lista simplemente enlazada,
- * y una estructura que apunta al principio y final
+ * Se declara la lista de tokens como una lista simplemente enlazada que guarda
+ * cadenas
  */
-struct _tokenNodo {
-    string token;
-    struct _tokenNodo *sig;
+
+struct _TokenNodo {
+  String token;
+  struct _TokenNodo *sig;
 };
 
-typedef struct _tokenNodo tokenNodo;
+typedef struct _TokenNodo *TokenNodo;
 
-struct _tokenList {
-    tokenNodo *first;
-    tokenNodo *last;
+/**
+ * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
+ * lista, por practicidad
+ */
+
+struct _TokenList {
+  TokenNodo first;
+  TokenNodo last;
 };
 
-typedef struct _tokenList* tokenList;
+typedef struct _TokenList *TokenList;
 
+TokenList guardar_token(TokenList l, String token);
 
 /**
  * getInput: string -> string
  * Recibe un string que se mostrará al usuario. Luego, solicita una entrada al usuario
  */
-string getInput (string message) {
-    
-    printf("%s", message);
+String getInput(String message) {
 
-    // Inicialización de variables
+  // Mostrar el mensaje al usuario
 
-    string buffer = NULL; // Guardado temporal de la entrada del usuario
-    size_t capacity = 0, size = 0; // Capacidad del buffer y 
-    int c; // Caracter leído
+  printf("%s", message);
 
-    while ((c = fgetc(stdin)) != '\n' && c != EOF) {
+  // Inicialización de variables
 
-        // Hacer crecer el buffer si es necesario
-        if ((size + 1) > capacity) {
+  String buffer = NULL;         // Guardado temporal de la entrada del usuario
+  size_t capacity = 0, size = 0;        // Capacidad del buffer y tamaño real
+  int c;                        // Caracter leído
 
-            /* Si la capacidad no sobrepasa el limite de tamaño, aumentarlo */
+  while ((c = fgetc(stdin)) != '\n' && c != EOF) {
 
-            if (capacity < SIZE_MAX)
-                capacity++;
-            else { // Sino, abortar y no retornar nada
-                free(buffer);
-                return NULL;
-            }
+    // Hacer crecer el buffer si es necesario
+    if ((size + 1) > capacity) {
 
-            // Extender el buffer
+      /* Si la capacidad no sobrepasa el limite de tamaño, aumentarlo */
 
-            string temp = realloc(buffer, capacity * (sizeof(char)));
-            if (temp == NULL) {
-                free(buffer);
-                return NULL;
-            }
-            buffer = temp;
-        }
-
-        // Meter el caracter en el buffer
-
-        buffer[size++] = c;
-    }
-
-    // Si el usuario no dió ninguna entrada, abortar y retornar NULL
-
-    if (size == 0 && c == EOF) {
+      if (capacity < SIZE_MAX)
+        capacity++;
+      else {                    // Sino, abortar y no retornar nada
         free(buffer);
         return NULL;
-    }
+      }
 
-    // Minimizar el buffer
+      // Extender el buffer
 
-    string s = malloc((size + 1) * (sizeof(char)));
-    if (s == NULL) {
+      String temp = realloc(buffer, capacity * (sizeof(char)));
+      if (temp == NULL) {
         free(buffer);
         return NULL;
+      }
+      buffer = temp;
     }
+    // Meter el caracter en el buffer
 
-    strncpy(s, buffer, size);
+    buffer[size++] = c;
+  }
 
-    // Terminar string
-    s[size] = '\0';
+  // Si el usuario no dió ninguna entrada, abortar y retornar NULL
 
+  if (size == 0 && c == EOF) {
     free(buffer);
+    return NULL;
+  }
 
-    return s;
+  // Minimizar el buffer
+
+  String s = malloc((size + 1) * (sizeof(char)));
+  if (s == NULL) {
+    free(buffer);
+    return NULL;
+  }
+
+  // Copiar lo que contiene el buffer en s con el tamaño real del string
+
+  strncpy(s, buffer, size);
+
+  // Terminar string
+  s[size] = '\0';
+
+  free(buffer);
+
+  return s;
 
 }
 
-tokenList tokenize (string tokens) {
+/**
+ * tokenize: string -> tokenList
+ * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
+ */
+TokenList tokenize(String tokens) {
+
+  // Primero, si el string está vacío, no hacer nada
+
+  if (tokens == NULL) {
     return NULL;
+  }
+
+  // Sino, se continua con el proceso
+
+  /**
+   * TODO: Comprimir funciones de la lista de tokens en funciones anónimas
+   */
+
+  TokenList list = malloc(sizeof(TokenList));
+  list->first = list->last = NULL;
+
+  // Primero, se escanea el primer token y se guarda en la lista
+
+  String s = strtok(tokens, " ");
+
+  while (s != NULL) {
+    list = guardar_token(list, s);
+    s = strtok(NULL, " ");
+  }
+
+  return list;
+}
+
+TokenList guardar_token(TokenList l, String token) {
+
+  // Crear nodo
+
+  TokenNodo nodo = malloc(sizeof(TokenNodo));
+  strcpy(nodo->token, token);
+  nodo->sig = NULL;
+
+  if (l->first == l->last == NULL) { // Caso 1: Lista vacía
+    l->first = l->last = nodo;
+  }
+  else { // Caso 2: Lista con elementos. Añadir al final
+    l->last->sig = nodo;
+    l->last = nodo;
+  }
+
+  return l;
+
 }

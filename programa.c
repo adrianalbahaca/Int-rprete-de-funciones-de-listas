@@ -10,19 +10,20 @@ int main(void) {
     bool quit = true;
     while(quit) {
         
-        string command = getInput("==> ");
+        String command = getInput("==> ");
+        assert(command != NULL);
 
         /**
          * TODO: Crear una función que recibe el input y tokeniza cada elemento, agarrando
          * cada error que se pueda formar, retornando una lista de tokens
          */
-        tokenList tokens = tokenizate(command);
+        TokenList tokens = tokenize(command);
 
         /**
          * TODO: Crear una función que recibe la lista de tokens y lo convierte en un
          * Árbol Abstracto de Sintaxis (AAS)
          */
-        ASTNodo *ast = parse(tokens);
+        ASTTree ast = parse(tokens);
 
         /**
          * TODO: Crear una función que recibe el AAS y ejecuta cada instrucción de cada nodo
