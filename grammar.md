@@ -7,6 +7,7 @@ Sentencia := Definicion ';' | Aplicacion  ';' | Busqueda ';'
 ## Definicion de funciones:
 ```
 Definicion := 'deff' DEF '=' FUNCIONES | 'deff' DEF '=' REPETICION
+REPETICION := FUNCION '<' FUNCION '>' FUNCION
 FUNCIONES := FUNCION FUNCIONES | FUNCION
 FUNCION := DEF | PRIMITIVA
 PRIMITIVA := '0i' | '0d' | 'Si' | 'Sd' | 'Di' | 'Dd'
@@ -29,14 +30,4 @@ LISTA := DEF | '[' ELEMENTOS ']'
 ```
 Busqueda := 'search' '{' LISTAS '}'
 LISTAS := LISTA ',' LISTA ';' LISTAS | LISTA ',' LISTA
-```
----
-## Definición de reconocimiento de números naturales y letras
-```
-DEF := LETRA | LETRA DEF
-LETRA := LETRA_MAYUSCULA | LETRA_MINUSCULA | DIGITO
-LETRA_MAYUSCULA := 'A' | 'B' | ... | 'Z' | [otras letras Unicode mayúsculas]
-LETRA_MINUSCULA := 'a' | 'b' | ... | 'z' | [otras letras Unicode minúsculas]
-DIGITOS ::= DIGITO DIGITOS | DIGITO
-DIGITO ::= 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
 ```
