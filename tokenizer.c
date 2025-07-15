@@ -92,7 +92,7 @@ String str_dup(const String s) {
 }
 
 /**
- * crear_lista: void -> TokenList
+ * crear_lista: void -> TokenList (Función auxiliar)
  * Crea una lista simplemente enlazada de tokens vacía
  */
 TokenList crear_lista() {
