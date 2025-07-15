@@ -24,14 +24,14 @@ Ej: `defl L1 = [0, 2, 4 ,8];`
 
 ## Búsqueda:
 El comando search genera una función de listas que convierte a la lista L1 en la lista L2  
-Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search L1 L2; -> Si Md Si Md Si Md;`
+Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;`
 (Notar que pueden haber pares de listas que no tengan solución)
 
 # Cosas a hacer:
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
- - [ ] Crear una función que tokenize cada comando que escriba el usuario <!-- Requiere pocas funciones -->
+ - [x] Crear una función que tokenize cada comando que escriba el usuario <!-- Funciones que no puede declarar el usuario -->
  - [ ] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
  - [ ] Definir y guardar funciones primitivas <!-- Enum? -->
  - [ ] Definir la función composición, que guarda funciones de listas, para después usarlas más adelante <!-- Requerirá algún tipo de recursión -->
  - [ ] Definir una definición de listas directa <!-- Simple -->
- - [ ] Definiir la búsqueda entre pares de listas <!-- Esta parece la parte más compleja -->
+ - [ ] Definir la búsqueda entre pares de listas <!-- Esta parece la parte más compleja -->
