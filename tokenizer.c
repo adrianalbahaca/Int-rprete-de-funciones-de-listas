@@ -1,5 +1,4 @@
 #include "tokenizer.h"
-#include "glist.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -7,42 +6,10 @@
 #include <stdint.h>
 
 /**
- * Por convección y practicidad, se declara char* como string
- */
-
-typedef char *String;
-
-/**
- * Se declara la lista de tokens como una lista simplemente enlazada que guarda
- * cadenas
- */
-
-struct _TokenNodo {
-  String token;
-  struct _TokenNodo *sig;
-};
-
-typedef struct _TokenNodo *TokenNodo;
-
-/**
- * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
- * lista, por practicidad
- */
-
-struct _TokenList {
-  TokenNodo first;
-  TokenNodo last;
-};
-
-typedef struct _TokenList *TokenList;
-
-TokenList guardar_token(TokenList l, String token);
-
-/**
  * getInput: string -> string
  * Recibe un string que se mostrará al usuario. Luego, solicita una entrada al usuario
  */
-String getInput(String message) {
+String get_input(String message) {
 
   // Mostrar el mensaje al usuario
 
@@ -111,6 +78,58 @@ String getInput(String message) {
 }
 
 /**
+ * str_dup: String -> String (Función auxiliar)
+ * Asigna el espacio en necesario para duplicar un string a otro
+ */
+
+String str_dup(const String s) {
+    size_t size = strlen(s) + 1;
+    String p = malloc(size);
+    if (p) {
+        memcpy(p, s, size);
+    }
+    return p;
+}
+
+/**
+ * crear_lista: void -> TokenList
+ * Crea una lista simplemente enlazada de tokens vacía
+ */
+TokenList crear_lista() {
+
+  TokenList list = malloc(sizeof(TokenList));
+  list->first = list->last = NULL;
+  
+  return list;
+}
+
+/**
+ * anadir_token: TokenList String -> TokenList (Función auxiliar)
+ * Añade el token dado al final de la lista de tokens
+ */
+TokenList anadir_token(TokenList l, String token) {
+
+  // Crear nodo y copiar el token allí
+
+  TokenNodo *nodo = malloc(sizeof(token));
+  assert(nodo != NULL);
+  nodo->token = str_dup(token);
+  nodo->sig = NULL;
+
+  // Caso 1: Lista vacía
+  if (l->first == NULL && l->last == NULL) {
+    l->first = l->last = nodo;
+  }
+  else {
+    l->last->sig = nodo;
+    l->last = nodo;
+  }
+
+  return l;
+
+}
+
+/**
  * tokenize: string -> tokenList
  * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
  */
@@ -122,43 +141,18 @@ TokenList tokenize(String tokens) {
     return NULL;
   }
 
-  // Sino, se continua con el proceso
+  // Sino, se crea la lista
 
-  /**
-   * TODO: Comprimir funciones de la lista de tokens en funciones anónimas
-   */
-
-  TokenList list = malloc(sizeof(TokenList));
-  list->first = list->last = NULL;
+  TokenList list = crear_lista();
 
   // Primero, se escanea el primer token y se guarda en la lista
 
   String s = strtok(tokens, " ");
 
   while (s != NULL) {
-    list = guardar_token(list, s);
+    list = anadir_token(list, s);
     s = strtok(NULL, " ");
   }
 
   return list;
-}
-
-TokenList guardar_token(TokenList l, String token) {
-
-  // Crear nodo
-
-  TokenNodo nodo = malloc(sizeof(TokenNodo));
-  strcpy(nodo->token, token);
-  nodo->sig = NULL;
-
-  if (l->first == l->last == NULL) { // Caso 1: Lista vacía
-    l->first = l->last = nodo;
-  }
-  else { // Caso 2: Lista con elementos. Añadir al final
-    l->last->sig = nodo;
-    l->last = nodo;
-  }
-
-  return l;
-
 }

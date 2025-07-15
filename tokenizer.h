@@ -1,20 +1,44 @@
 #ifndef __TOKENIZER__
 #define __TOKENIZER__
 
-typedef char* String;
+/**
+ * Por convección, se declara char* como string
+ */
+
+typedef char *String;
+
+/**
+ * Se declara la lista de tokens como una lista simplemente enlazada que guarda
+ * cadenas
+ */
+
+struct _TokenNodo {
+  String token;
+  struct _TokenNodo *sig;
+};
 
 typedef struct _TokenNodo TokenNodo;
 
-typedef struct _TokenList* TokenList;
+/**
+ * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
+ * lista, por practicidad al añadir tokens
+ */
+
+struct _TokenList {
+  TokenNodo *first;
+  TokenNodo *last;
+};
+
+typedef struct _TokenList *TokenList;
 
 /**
- * getInput: string -> string
+ * getInput: String -> String
  * Recibe un string que se mostrará al usuario, y luego solicita una entrada al usuario
  */
-String getInput(String mensaje);
+String get_input(String mensaje);
 
 /**
- * tokenize: string -> tokenList
+ * tokenize: String -> TokenList
  * Tokeniza cada parte del string en una lista de tokens, para después ser procesado
  */
 TokenList tokenize(String tokens);
