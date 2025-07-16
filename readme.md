@@ -31,6 +31,7 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
  - [x] Crear una función que tokenize cada comando que escriba el usuario <!-- Funciones que no puede declarar el usuario -->
  - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
+ - [ ] Diseñar los nodos y las funciones asociadas al AST
  - [ ] Definir y guardar funciones primitivas <!-- Enum? -->
  - [ ] Definir la función composición, que guarda funciones de listas, para después usarlas más adelante <!-- Requerirá algún tipo de recursión -->
  - [ ] Definir una definición de listas directa <!-- Simple -->
