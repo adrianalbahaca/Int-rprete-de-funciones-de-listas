@@ -147,34 +147,11 @@ String leer_token(String *cadena) {
 
   while (temporal && strchr(delimitadores, *temporal)) temporal++;
 
-  // Luego, se crea el buffer necesario. Será dinámico, porque no sé qué tan grande es 
+  /**
+   * TODO: Manejar el buffer de forma dinámica, similar a cómo se hizo en get_input
+   * Es necesario guardar cada caracter del token en el buffer para retornarlo
+   */
   String buffer = NULL;
-  size_t capacidad = 0, tamano = 0;
-
-  while(*temporal && strchr(delimitadores, *temporal)) {
-    if ((tamano + 1) > capacidad) {
-
-      /* Si la capacidad no sobrepasa el limite de tamaño, aumentarlo */
-
-      if (capacidad < SIZE_MAX)
-        capacidad++;
-      else {                    // Sino, abortar y no retornar nada
-        free(buffer);
-        return NULL;
-      }
-
-      // Extender el buffer
-
-      String temp = realloc(buffer, capacidad * (sizeof(char)));
-      if (temp == NULL) {
-        free(buffer);
-        return NULL;
-      }
-      buffer = temp;
-    }
-
-    buffer[tamano++] = *temporal++;
-  }
 
   buffer[0] = '\0';
   *cadena = temporal;
