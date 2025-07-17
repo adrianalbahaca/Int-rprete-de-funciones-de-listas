@@ -4,6 +4,8 @@
 #include <string.h>
 #include <assert.h>
 #include <stdint.h>
+#include <ctype.h>
+#include <stdbool.h>
 
 /**
  * getInput: string -> string
@@ -112,7 +114,7 @@ TokenList anadir_token(TokenList l, String token) {
   // Crear nodo y copiar el token allí
 
   TokenNodo *nodo = malloc(sizeof(token));
-  assert(nodo != NULL);
+  assert(nodo);
   nodo->token = str_dup(token);
   nodo->sig = NULL;
 
@@ -130,6 +132,57 @@ TokenList anadir_token(TokenList l, String token) {
 }
 
 /**
+ * leer_token: String -> String
+ * Retorna cada token de la cadena, como los símbolos, identificadores, números, etc
+ * Es como strtok, pero personalizado para lo que necesito
+ */
+String leer_token(String *cadena) {
+
+  // Se guarda los delimitadores, como el espacio, corchetes, llaves, punto y coma, etc.
+  const String delimitadores = " ;[]{},";
+
+  // Se retira poco a poco el string dado
+
+  String temporal = *cadena;
+
+  while (temporal && strchr(delimitadores, *temporal)) temporal++;
+
+  // Luego, se crea el buffer necesario. Será dinámico, porque no sé qué tan grande es 
+  String buffer = NULL;
+  size_t capacidad = 0, tamano = 0;
+
+  while(*temporal && strchr(delimitadores, *temporal)) {
+    if ((tamano + 1) > capacidad) {
+
+      /* Si la capacidad no sobrepasa el limite de tamaño, aumentarlo */
+
+      if (capacidad < SIZE_MAX)
+        capacidad++;
+      else {                    // Sino, abortar y no retornar nada
+        free(buffer);
+        return NULL;
+      }
+
+      // Extender el buffer
+
+      String temp = realloc(buffer, capacidad * (sizeof(char)));
+      if (temp == NULL) {
+        free(buffer);
+        return NULL;
+      }
+      buffer = temp;
+    }
+
+    buffer[tamano++] = *temporal++;
+  }
+
+  buffer[0] = '\0';
+  *cadena = temporal;
+  return buffer;
+
+}
+
+/**
  * tokenize: string -> tokenList
  * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
  */
@@ -137,21 +190,18 @@ TokenList tokenize(String tokens) {
 
   // Primero, si el string está vacío, no hacer nada
 
-  if (tokens == NULL) {
-    return NULL;
-  }
+  assert(tokens);
 
   // Sino, se crea la lista
 
   TokenList list = crear_lista();
 
-  // Primero, se escanea el primer token y se guarda en la lista
+  // Luego, se usa una función auxiliar para ir leyendo poco a poco cada token de la cadena dada
 
-  String s = strtok(tokens, " ");
-
-  while (s != NULL) {
-    list = anadir_token(list, s);
-    s = strtok(NULL, " ");
+  while(true) {
+    String token = leer_token(&tokens);
+    if (!token) break;
+    list = anadir_token(list, token);
   }
 
   return list;
