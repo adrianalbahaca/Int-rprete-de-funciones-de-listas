@@ -19,9 +19,9 @@ String get_input(String message) {
 
   // Inicialización de variables
 
-  String buffer = NULL;         // Guardado temporal de la entrada del usuario
-  size_t capacity = 0, size = 0;        // Capacidad del buffer y tamaño real
-  int c;                        // Caracter leído
+  String buffer = NULL; // Guardado temporal de la entrada del usuario
+  size_t capacity = 0, size = 0;  // Capacidad del buffer y tamaño real
+  int c;  // Caracter leído
 
   while ((c = fgetc(stdin)) != '\n' && c != EOF) {
 
@@ -99,7 +99,8 @@ String str_dup(const String s) {
  */
 TokenList crear_lista() {
 
-  TokenList list = malloc(sizeof(TokenList));
+  TokenList list = malloc(sizeof(struct _TokenList));
+  assert(list);
   list->first = list->last = NULL;
   
   return list;
@@ -113,7 +114,7 @@ TokenList anadir_token(TokenList l, String token) {
 
   // Crear nodo y copiar el token allí
 
-  TokenNodo *nodo = malloc(sizeof(token));
+  TokenNodo *nodo = malloc(sizeof(TokenNodo));
   assert(nodo);
   nodo->token = str_dup(token);
   nodo->sig = NULL;
@@ -132,35 +133,61 @@ TokenList anadir_token(TokenList l, String token) {
 }
 
 /**
- * leer_token: String -> String
+ * string_a_token: String -> String
  * Retorna cada token de la cadena, como los símbolos, identificadores, números, etc
  * Es como strtok, pero personalizado para lo que necesito
  */
-String leer_token(String *cadena) {
+String string_a_token (String cadena, String delimitador) {
 
-  // Se guarda los delimitadores, como el espacio, corchetes, llaves, punto y coma, etc.
-  const String delimitadores = " ;[]{},";
+  static String retorno;
+  static int pos;
 
-  // Se retira poco a poco el string dado
+  // Si la cadena dada no es NULL, asignar retorno a cadena
 
-  String temporal = *cadena;
+  if (cadena) {
+    retorno = cadena;
+    pos = 0;
+  }
 
-  while (temporal && strchr(delimitadores, *temporal)) temporal++;
+  if (retorno == NULL) return NULL;
 
-  /**
-   * TODO: Manejar el buffer de forma dinámica, similar a cómo se hizo en get_input
-   * Es necesario guardar cada caracter del token en el buffer para retornarlo
-   */
-  String buffer = NULL;
+  // Saltar delimitadores
 
-  buffer[0] = '\0';
-  *cadena = temporal;
-  return buffer;
+  while (retorno[pos] && strchr(delimitador, retorno[pos])) pos++;
+
+  // Si llego al final del string, retornar NULL
+
+  if (retorno[pos] == '\0') return NULL;
+
+  int start = pos;
+
+  // Si se llega a un símbolo, guardarlo y retornarlo
+
+  if (ispunct(retorno[pos])) {
+    static char simbolo[2];
+    simbolo[0] = retorno[pos];
+    simbolo[1] = '\0';
+    pos++;
+    return simbolo;
+  }
+
+  // Sino, recorrer la palabra y guardarla en un string nuevo
+
+  while ((retorno[pos] && isalnum(retorno[pos])) || retorno[pos] == '_') pos++;
+
+  int largo = pos - start;
+
+  String token = malloc((largo + 1));
+  assert(token);
+  strncpy(token, retorno + start, largo);
+  token[largo] = '\0';
+
+  return token;
 
 }
 
 /**
- * tokenize: string -> tokenList
+ * tokenize: String -> tokenList
  * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
  */
 TokenList tokenize(String tokens) {
@@ -173,12 +200,12 @@ TokenList tokenize(String tokens) {
 
   TokenList list = crear_lista();
 
-  // Luego, se usa una función auxiliar para ir leyendo poco a poco cada token de la cadena dada
+  // Se busca el primer token
+  String token = string_a_token(tokens, " ");
 
-  while(true) {
-    String token = leer_token(&tokens);
-    if (!token) break;
+  while (token) {
     list = anadir_token(list, token);
+    token = string_a_token(NULL, " ");
   }
 
   return list;
