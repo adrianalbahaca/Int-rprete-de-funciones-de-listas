@@ -205,6 +205,7 @@ TokenList tokenize(String tokens) {
 
   while (token) {
     list = anadir_token(list, token);
+    free(token);
     token = string_a_token(NULL, " ");
   }
 
