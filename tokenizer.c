@@ -164,7 +164,8 @@ String string_a_token (String cadena, String delimitador) {
   // Si se llega a un símbolo, guardarlo y retornarlo
 
   if (ispunct(retorno[pos])) {
-    static char simbolo[2];
+    String simbolo = malloc(sizeof(char) * 2);
+    assert(simbolo);
     simbolo[0] = retorno[pos];
     simbolo[1] = '\0';
     pos++;
