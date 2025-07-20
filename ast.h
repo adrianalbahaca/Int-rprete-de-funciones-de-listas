@@ -3,28 +3,11 @@
 #include "tokenizer.h"
 
 /**
- * Definición de comandos a hacer
+ * TODO: Diseñar los nodos del AST. Son los siguientes:
+ * 1. Nodos de la sentencia: Busqueda, Aplicacion y Definicion
+ * 2. Nodos hoja (Terminales): DEF, DIGITO, PRIMITIVA
+ * 3. Nodos intermedios (No terminales): FUNCION, FUNCIONES, LISTA, LISTAS, etc
  */
-typedef enum {
-    DEFF,
-    DEFL,
-    APPLY,
-    SEARCH
-} Sentencia;
-
-/**
- * Definición de funciones primitivas
- */
-typedef enum {
-    ZERO_I,
-    ZERO_D,
-    SUC_I,
-    SUC_D,
-    DEL_I,
-    DEL_D
-} Primitivas;
-
-// Se define las estructuras que estarán en cada nodo
 
 /**
  * parse: TokenList -> ASTTree
