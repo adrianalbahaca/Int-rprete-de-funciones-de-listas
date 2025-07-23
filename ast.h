@@ -31,9 +31,6 @@ typedef enum {
     DIGITO
 } TipoDeNodo;
 
-// Primero, defino el nodo general
-typedef struct _AST_Nodo ASTNodo;
-
 /**
  * Luego, se define cada estructura que representa cada nodo
  * Empiezo con los nodos hoja
@@ -110,25 +107,32 @@ typedef union {
     NodoPrimitiva primitiva;
 
     // Nodos raíz
+
     NodoDeffFunctions DeffFunc;
     NodoDeffRepetition DeffRep;
     NodoApply Apply;
     NodoSearch Search;
+
+    // Nodos intermedios
+
+    NodoElementos Elementos;
+    NodoListas Listas;
+    NodoLista Lista;
 
 } NodoDatos;
 
 /**
  * Ahora, la estructura general del nodo
  */
-struct ASTNodo {
+typedef struct _ASTNodo {
     TipoDeNodo tipo;
-
-}
+    NodoDatos datos;
+} ASTNodo;
 
 /**
  * parse: TokenList -> ASTTree
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
-ASTTree parse(TokenList tokens);
+ASTNodo* parse(TokenList tokens);
 
 #endif /* __AST__ */
