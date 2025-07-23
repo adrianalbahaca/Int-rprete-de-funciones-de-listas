@@ -16,14 +16,13 @@ PRIMITIVA := '0i' | '0d' | 'Si' | 'Sd' | 'Di' | 'Dd'
 ## Definicion de listas:
 ```
 Definicion := 'defl' DEF '=' '[' ELEMENTOS ']'
-ELEMENTOS := ELEMENTO | ε
-ELEMENTO := DIGITOS ',' ELEMENTO | DIGITOS
+ELEMENTOS := DIGITOS ',' ELEMENTOS | DIGITOS | ε
 ```
 ---
 ## Definición de aplicación de funciones:
 ```
 Aplicacion := 'apply' FUNCION LISTA
-LISTA := DEF | '[' ELEMENTOS ']'
+LISTA := DEF 
 ```
 ---
 ## Definicion de búsqueda

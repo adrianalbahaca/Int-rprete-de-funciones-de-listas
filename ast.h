@@ -10,6 +10,122 @@
  */
 
 /**
+ * Primero, determino los tipos de nodos que pueden haber
+ */
+typedef enum {
+    AST_DEFINICION_DEFF,
+    AST_DEFINICION_DEFF_REP,
+    AST_DEFINICION_DEFL,
+    AST_BUSQUEDA,
+    AST_APLICACION,
+    ID,
+    PRIMITIVA,
+    FUNCIONES,
+    FUNCION,
+    REPETICION,
+    ELEMENTOS,
+    ELEMENTO,
+    LISTAS,
+    LISTA,
+    DIGITOS,
+    DIGITO
+} TipoDeNodo;
+
+// Primero, defino el nodo general
+typedef struct _AST_Nodo ASTNodo;
+
+/**
+ * Luego, se define cada estructura que representa cada nodo
+ * Empiezo con los nodos hoja
+ */
+typedef struct {
+    int digito;
+} NodoDigito;
+
+typedef struct {
+    char* def;
+} NodoDef;
+
+typedef struct {
+    char* primitiva;
+} NodoPrimitiva;
+
+/**
+ * Luego, los nodos raíz posibles
+ */
+typedef struct {
+    ASTNodo* funcion;
+    ASTNodo* funciones;
+} NodoDeffFunctions;
+
+typedef struct {
+    ASTNodo* def;
+    ASTNodo* funcion1;
+    ASTNodo* funcion2;
+    ASTNodo* funcion3;
+} NodoDeffRepetition;
+
+typedef struct {
+    ASTNodo* def;
+    ASTNodo* elementos;
+} NodoDefl;
+
+typedef struct {
+    ASTNodo* funcion;
+    ASTNodo* lista;
+} NodoApply;
+
+typedef struct {
+    ASTNodo* listas;
+} NodoSearch;
+
+/**
+ * Vemos ahora los nodos intermedios
+ */
+
+typedef struct {
+    ASTNodo* digito;
+    ASTNodo* elementos;
+} NodoElementos;
+
+typedef struct {
+    char* def;
+} NodoLista;
+
+typedef struct {
+    ASTNodo* lista1;
+    ASTNodo* lista2;
+    ASTNodo* listas;
+} NodoListas;
+
+/**
+ * Finalmente, se guarda todo en una union por practicidad
+ */
+typedef union {
+
+    // Nodos hoja
+
+    NodoDigito Digito;
+    NodoDef Definicion;
+    NodoPrimitiva primitiva;
+
+    // Nodos raíz
+    NodoDeffFunctions DeffFunc;
+    NodoDeffRepetition DeffRep;
+    NodoApply Apply;
+    NodoSearch Search;
+
+} NodoDatos;
+
+/**
+ * Ahora, la estructura general del nodo
+ */
+struct ASTNodo {
+    TipoDeNodo tipo;
+
+}
+
+/**
  * parse: TokenList -> ASTTree
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
