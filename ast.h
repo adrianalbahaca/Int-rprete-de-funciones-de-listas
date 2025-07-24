@@ -104,7 +104,7 @@ typedef union {
 
     NodoDigito Digito;
     NodoDef Definicion;
-    NodoPrimitiva primitiva;
+    NodoPrimitiva Primitiva;
 
     // Nodos raíz
 
