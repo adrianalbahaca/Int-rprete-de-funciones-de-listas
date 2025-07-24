@@ -1,36 +1,39 @@
 # Esta es la gramática que se va a usar en el parser:
 ## Sentencia principal:
 ```
-Sentencia := Definicion ';' | Aplicacion  ';' | Busqueda ';'
+Sentencia ::= Deff PUNTO_COMA | Defl PUNTO_COMA | Apply PUNTO_COMA | Search PUNTO_COMA
 ```
----
-## Definicion de funciones:
+## Definición de funciones
 ```
-Definicion := 'deff' DEF '=' FUNCIONES | 'deff' DEF '=' REPETICION
-REPETICION := FUNCION '<' FUNCION '>' FUNCION
-FUNCIONES := FUNCION FUNCIONES | FUNCION
+Deff ::= "deff" DEF IGUAL Funcs | "deff" DEF IGUAL Rep
+Rep ::= Func "<" Func ">" Func
+Funcs ::= Func Funcs | Func
+Func ::= DEF | PRIMITIVA
 ```
----
-## Definicion de listas:
+## Definición de listas
 ```
-Definicion := 'defl' DEF '=' '[' ELEMENTOS ']'
+Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
+Elementos ::= DIGITO COMA Elementos | DIGITO | e
 ```
----
-## Definición de aplicación de funciones:
+## Definición de aplicación
 ```
-Aplicacion := 'apply' FUNCION LISTA
-LISTA := DEF | '[' ELEMENTOS ']'
+Apply ::= "apply" DEF DEF | "apply DEF" COR_ABRE Elementos COR_CIERRA
 ```
----
-## Definicion de búsqueda
+## Definición de búsqueda
 ```
-Busqueda := 'search' '{' LISTAS '}'
-LISTAS := LISTA ',' LISTA ';' LISTAS | LISTA ',' LISTA
+Search ::= "search" LLAVE_ABRE Listas LLAVE_CIERRA
+Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
+Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
 ```
-
 ## Terminales
 ```
-ELEMENTOS := DIGITOS ',' ELEMENTOS | DIGITOS | ε
-FUNCION := DEF | PRIMITIVA
-PRIMITIVA := '0i' | '0d' | 'Si' | 'Sd' | 'Di' | 'Dd'
+COR_ABRE ::= "["
+COR_CIERRA ::= "]"
+LLAVE_ABRE ::= "{"
+LLAVE_CIERRA ::= "}"
+COMA ::= ","
+PUNTO_COMA ::= ";"
+DEF ::= String que se guardará en un Hash después
+DIGITO ::= Entero dentro de una lista
+PRIMITIVA ::= 0i | 0d | Si | Sd | Di | Dd
 ```

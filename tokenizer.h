@@ -29,15 +29,12 @@ typedef enum {
 
     // Luego, se define los nodos hoja
 
-    DEF_LISTA, // String a asociar a una lista
-    DEF_FUNCION, // String a asociar a una función
+    DEF, // String a asociar a una lista
     PRIMITIVA, // PRIMITIVA := '0i' | '0d' | 'Si' | 'Sd' | 'Di' | 'Dd'
     DIGITO, // Número entero
 
     // Tipos de Sentencia
 
-    REPETICION,
-    FUNCIONES,
     LISTAS,
     LISTA,
     ELEMENTOS,
