@@ -2,10 +2,55 @@
 #define __TOKENIZER__
 
 /**
+ * TODO: Diseñar los tipos de cada token. Son los siguientes:
+ * 1. Nodos de la sentencia: Busqueda, Aplicacion y Definicion
+ * 2. Nodos hoja (Terminales): DEF, DIGITO, PRIMITIVA
+ * 3. Nodos intermedios (No terminales): FUNCION, FUNCIONES, LISTA, LISTAS, etc
+ * 4. Símbolos: cosas como las comas, puntos y comas, corchetes angulados y llaves
+ */
+
+/**
  * Por convección, se declara char* como string
  */
 
 typedef char *String;
+
+/**
+ * Primero, determino los tipos de nodos que pueden haber
+ */
+typedef enum {
+
+    // Primero, se define los tipos de nodo raíz
+
+    DEFF_FUNCION, // Definicion := 'deff' DEF '=' FUNCIONES | 'deff' DEF '=' REPETICION
+    DEFL_LISTA, // 'defl' DEF '=' '[' ELEMENTOS ']'
+    APPLY, // 'apply' FUNCION LISTA
+    SEARCH, // 'search' '{' LISTAS '}'
+
+    // Luego, se define los nodos hoja
+
+    DEF_LISTA, // String a asociar a una lista
+    DEF_FUNCION, // String a asociar a una función
+    PRIMITIVA, // PRIMITIVA := '0i' | '0d' | 'Si' | 'Sd' | 'Di' | 'Dd'
+    DIGITO, // Número entero
+
+    // Tipos de Sentencia
+
+    REPETICION,
+    FUNCIONES,
+    LISTAS,
+    LISTA,
+    ELEMENTOS,
+
+    // Finalmente, símbolos
+    COMA,
+    PUNTO_COMA,
+    LLAVE_APERTURA,
+    LLAVE_CIERRE,
+    CORCHETE_APERTURA,
+    CORCHETE_CIERRE
+
+} TipoDeNodo;
 
 /**
  * Se declara la lista de tokens como una lista simplemente enlazada que guarda
@@ -13,6 +58,7 @@ typedef char *String;
  */
 
 struct _TokenNodo {
+  TipoDeNodo tipo;
   String token;
   struct _TokenNodo *sig;
 };

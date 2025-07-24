@@ -119,6 +119,11 @@ TokenList anadir_token(TokenList l, String token) {
   nodo->token = str_dup(token);
   nodo->sig = NULL;
 
+  // Ahora, toca determinar de qué tipo es el token
+  if(strcmp(token, "deff")) {
+    nodo->tipo = DEFF_FUNCION;
+  }
+
   // Caso 1: Lista vacía
   if (l->first == NULL && l->last == NULL) {
     l->first = l->last = nodo;

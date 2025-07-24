@@ -10,129 +10,61 @@
  */
 
 /**
- * Primero, determino los tipos de nodos que pueden haber
+ * Luego, defino las funciones primitivas
  */
 typedef enum {
-    AST_DEFINICION_DEFF,
-    AST_DEFINICION_DEFF_REP,
-    AST_DEFINICION_DEFL,
-    AST_BUSQUEDA,
-    AST_APLICACION,
-    ID,
-    PRIMITIVA,
-    FUNCIONES,
-    FUNCION,
-    REPETICION,
-    ELEMENTOS,
-    ELEMENTO,
-    LISTAS,
-    LISTA,
-    DIGITOS,
-    DIGITO
-} TipoDeNodo;
+    CERO_IZQ, 
+    CERO_DER,
+    SUC_IZQ,
+    SUC_DER,
+    DEL_IZQ,
+    DEL_DER
+} TipoPrimitiva;
 
 /**
- * Luego, se define cada estructura que representa cada nodo
- * Empiezo con los nodos hoja
+ * Se define la estructura de los nodos hoja
  */
+
+typedef struct {
+    String def;
+} NodoDef;
+
 typedef struct {
     int digito;
 } NodoDigito;
 
 typedef struct {
-    char* def;
-} NodoDef;
-
-typedef struct {
-    char* primitiva;
+    TipoPrimitiva primitiva;
 } NodoPrimitiva;
 
 /**
- * Luego, los nodos raíz posibles
- */
-typedef struct {
-    ASTNodo* funcion;
-    ASTNodo* funciones;
-} NodoDeffFunctions;
-
-typedef struct {
-    ASTNodo* def;
-    ASTNodo* funcion1;
-    ASTNodo* funcion2;
-    ASTNodo* funcion3;
-} NodoDeffRepetition;
-
-typedef struct {
-    ASTNodo* def;
-    ASTNodo* elementos;
-} NodoDefl;
-
-typedef struct {
-    ASTNodo* funcion;
-    ASTNodo* lista;
-} NodoApply;
-
-typedef struct {
-    ASTNodo* listas;
-} NodoSearch;
-
-/**
- * Vemos ahora los nodos intermedios
- */
-
-typedef struct {
-    ASTNodo* digito;
-    ASTNodo* elementos;
-} NodoElementos;
-
-typedef struct {
-    char* def;
-} NodoLista;
-
-typedef struct {
-    ASTNodo* lista1;
-    ASTNodo* lista2;
-    ASTNodo* listas;
-} NodoListas;
-
-/**
- * Finalmente, se guarda todo en una union por practicidad
+ * Finalmente, una unión masiva donde se guarda cada tipo
  */
 typedef union {
 
     // Nodos hoja
 
-    NodoDigito Digito;
-    NodoDef Definicion;
-    NodoPrimitiva Primitiva;
+    NodoDef def;
+    NodoDigito digito;
+    NodoPrimitiva primitiva;
 
-    // Nodos raíz
 
-    NodoDeffFunctions DeffFunc;
-    NodoDeffRepetition DeffRep;
-    NodoApply Apply;
-    NodoSearch Search;
-
-    // Nodos intermedios
-
-    NodoElementos Elementos;
-    NodoListas Listas;
-    NodoLista Lista;
-
-} NodoDatos;
+} DatosNodo;
 
 /**
- * Ahora, la estructura general del nodo
+ * Esta es la definición del nodo general
  */
 typedef struct _ASTNodo {
     TipoDeNodo tipo;
-    NodoDatos datos;
+    DatosNodo datos; 
 } ASTNodo;
+
+typedef ASTNodo* ASTTree;
 
 /**
  * parse: TokenList -> ASTTree
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
-ASTNodo* parse(TokenList tokens);
+ASTTree parse(TokenList tokens); // Sentencia ::= Definicion ';' | Aplicacion  ';' | Busqueda ';'
 
 #endif /* __AST__ */
