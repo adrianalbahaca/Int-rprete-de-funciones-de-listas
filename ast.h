@@ -34,12 +34,17 @@ typedef enum {
     ELEMENTOS,
 
     // Finalmente, símbolos
+
     COMA,
     PUNTO_COMA,
     LLAVE_APERTURA,
     LLAVE_CIERRE,
     CORCHETE_APERTURA,
-    CORCHETE_CIERRE
+    CORCHETE_CIERRE,
+
+    // Por último, el comando de cierre
+    
+    QUIT
 
 } TipoDeNodo;
 
