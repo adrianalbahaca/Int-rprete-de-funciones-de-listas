@@ -11,6 +11,29 @@
 /**
  * TODO: Definir nodos hojas
  */
+ASTNodo* crear_nodo_func_primitiva(String primitiva) {
+    ASTNodo* nodo = malloc(sizeof(ASTNodo));
+    assert(nodo);
+    nodo->tipo = PRIMITIVA;
+    nodo->datos.Primitiva.primitiva = tipo_primitiva(primitiva);
+    return nodo;
+}
+
+ASTNodo* crear_nodo_def(String def) {
+    ASTNodo* nodo = malloc(sizeof(ASTNodo));
+    assert(nodo);
+    nodo->tipo = DEF;
+    strcpy(nodo->datos.Def.def, def);
+    return nodo;
+}
+
+ASTNodo* crear_nodo_digito(int digito) {
+    ASTNodo* nodo = malloc(sizeof(ASTNodo));
+    assert(nodo);
+    nodo->tipo = DIGITO;
+    nodo->datos.Digito.digito = digito;
+    return nodo;
+}
 
 /**
  * TODO: Definir nodos raíces, con sus reglas

@@ -83,9 +83,9 @@ typedef union {
 
     // Nodos hoja
 
-    NodoDef def;
-    NodoDigito digito;
-    NodoPrimitiva primitiva;
+    NodoDef Def;
+    NodoDigito Digito;
+    NodoPrimitiva Primitiva;
 
 
 } DatosNodo;
