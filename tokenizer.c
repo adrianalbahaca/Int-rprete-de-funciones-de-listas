@@ -101,7 +101,7 @@ TokenList crear_lista() {
 
   TokenList list = malloc(sizeof(struct _TokenList));
   assert(list);
-  list->first = list->last = NULL;
+  list->head = list->tail = NULL;
   
   return list;
 }
@@ -124,12 +124,12 @@ TokenList anadir_token(TokenList l, String token) {
    */
 
   // Caso 1: Lista vacía
-  if (l->first == NULL && l->last == NULL) {
-    l->first = l->last = nodo;
+  if (l->head == NULL && l->tail == NULL) {
+    l->head = l->tail = nodo;
   }
   else {
-    l->last->sig = nodo;
-    l->last = nodo;
+    l->tail->sig = nodo;
+    l->tail = nodo;
   }
 
   return l;
