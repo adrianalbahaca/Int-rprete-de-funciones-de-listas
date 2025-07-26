@@ -55,6 +55,7 @@ void destruir_lista(TokenList lista) {
 }
 
 /*----------------------------------------------------------------------------------*/
+/* ----- Nodos hoja ----- */
 
 /**
  * TODO: Definir nodos hojas
@@ -96,6 +97,17 @@ ASTNodo* crear_nodo_digito(int digito) {
     nodo->datos.Digito.digito = digito;
     return nodo;
 }
+
+/* --------------------------------------------------------------- */
+/* ----- Nodos intermedios ----- */
+
+/**
+ * TODO: Definir nodos intermedios, chequeando que la escritura durante el proceso sea
+ * la adecuada
+ */
+
+/*-----------------------------------------------------------------*/
+/* ----- Nodos raíces ----- */
 
 /**
  * TODO: Definir nodos raíces, con sus reglas
@@ -151,10 +163,7 @@ ASTNodo* crear_nodo_digito(int digito) {
     return arbol;
  }
 
-/**
- * TODO: Definir nodos intermedios, chequeando que la escritura durante el proceso sea
- * la adecuada
- */
+ /* ------------------------------------------------------------------ */
 
 /**
  * parse: TokenList -> ASTTree
