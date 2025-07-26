@@ -5,7 +5,6 @@
 #include <assert.h>
 #include <stdint.h>
 #include <ctype.h>
-#include <stdbool.h>
 
 /**
  * getInput: string -> string
@@ -87,6 +86,7 @@ String get_input(String message) {
 String str_dup(const String s) {
     size_t size = strlen(s) + 1;
     String p = malloc(size);
+    assert(p);
     if (p) {
         memcpy(p, s, size);
     }
