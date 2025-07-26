@@ -76,6 +76,10 @@ typedef struct {
     TipoPrimitiva primitiva;
 } NodoPrimitiva;
 
+typedef struct {
+    int quit;
+} NodoQuit;
+
 /**
  * Finalmente, una unión masiva donde se guarda cada tipo
  */
@@ -86,6 +90,9 @@ typedef union {
     NodoDef Def;
     NodoDigito Digito;
     NodoPrimitiva Primitiva;
+
+    // Comando quit
+    NodoQuit Quit;
 
 
 } DatosNodo;
