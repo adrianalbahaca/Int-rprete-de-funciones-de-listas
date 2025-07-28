@@ -29,18 +29,11 @@ typedef enum {
 
     // Tipos de Sentencia
 
-    LISTAS,
-    LISTA,
-    ELEMENTOS,
-
-    // Finalmente, símbolos
-
-    COMA,
-    PUNTO_COMA,
-    LLAVE_APERTURA,
-    LLAVE_CIERRE,
-    CORCHETE_APERTURA,
-    CORCHETE_CIERRE,
+    LISTAS, // Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
+    LISTA, // Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
+    ELEMENTOS, // 
+    REPETICION,
+    FUNCS,
 
     // Por último, el comando de cierre
     
@@ -64,10 +57,16 @@ typedef enum {
  * Se define la estructura de los nodos hoja
  */
 
+/**
+ * Esta es la estructura para el nodo hoja de tipo DEF
+ */
 typedef struct {
     String def;
 } NodoDef;
 
+/**
+ * Esta es la estructura para el nodo hoja de tipo DIGITO
+ */
 typedef struct {
     int digito;
 } NodoDigito;
@@ -81,6 +80,33 @@ typedef struct {
 } NodoQuit;
 
 /**
+ * Se define los nodos raíces
+ */
+typedef struct {
+    ASTNodo* def;
+    ASTNodo* funcs;
+} NodoDeff;
+
+typedef struct {
+    ASTNodo* function;
+    ASTNodo* lista;
+} NodoDefl;
+
+typedef struct {
+    ASTNodo* function;
+    ASTNodo* list;
+} NodoApply;
+
+/**
+ * Además, se define los nodos intermedios
+ */
+
+typedef struct {
+    ASTNodo* funcion;
+    ASTNodo* funciones;
+} NodoFunciones;
+
+/**
  * Finalmente, una unión masiva donde se guarda cada tipo
  */
 typedef union {
@@ -90,6 +116,15 @@ typedef union {
     NodoDef Def;
     NodoDigito Digito;
     NodoPrimitiva Primitiva;
+
+    // Nodos raíz
+    NodoDeff Deff;
+    NodoDefl Defl;
+    NodoApply Apply;
+    NodoSearch Search;
+
+    // Nodos intermedios
+    NodoFunciones Funciones;
 
     // Comando quit
     NodoQuit Quit;

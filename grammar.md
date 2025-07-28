@@ -6,7 +6,7 @@ Sentencia ::= Deff PUNTO_COMA | Defl PUNTO_COMA | Apply PUNTO_COMA | Search PUNT
 ## Definición de funciones
 ```
 Deff ::= "deff" DEF IGUAL Funcs | "deff" DEF IGUAL Rep
-Rep ::= Func "<" Func ">" Func
+Rep ::= Funcs "<" Funcs ">" Funcs
 Funcs ::= Func Funcs | Func
 Func ::= DEF | PRIMITIVA
 ```

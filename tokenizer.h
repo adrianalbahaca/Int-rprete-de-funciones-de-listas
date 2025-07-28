@@ -9,6 +9,18 @@
  * 4. Símbolos: cosas como las comas, puntos y comas, corchetes angulados y llaves
  */
 
+const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+
+/**
+ * Se declara la lista de tipos de tokens que puede tener cada token
+ */
+typedef enum {
+  TOKEN_DEFF, TOKEN_DEFL, TOKEN_APPLY, TOKEN_SEARCH,
+  TOKEN_DEF, TOKEN_PRIMITIVA, TOKEN_DIGITO, TOKEN_COR_ABRE,
+  TOKEN_COR_CIERRA, TOKEN_LLAVE_ABRE, TOKEN_LLAVE_CIERRA, TOKEN_COMA,
+  TOKEN_PUNTO_COMA, TOKEN_ERROR, TOKEN_EOF
+} TipoDeToken;
+
 /**
  * Por convección, se declara char* como string
  */
@@ -22,6 +34,7 @@ typedef char *String;
 
 struct _TokenNodo {
   String token;
+  TipoDeToken tipo;
   struct _TokenNodo *sig;
 };
 
