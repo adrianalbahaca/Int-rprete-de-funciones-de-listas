@@ -62,4 +62,10 @@ String get_input(String mensaje);
  */
 TokenList tokenize(String tokens);
 
+/**
+ * str_dup: String -> String
+ * Asigna el espacio necesario para duplicar un string a otro
+ */
+String str_dup(const String s);
+
 #endif /* __TOKENIZER__ */

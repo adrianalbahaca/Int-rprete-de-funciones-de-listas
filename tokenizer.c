@@ -148,7 +148,7 @@ TipoDeToken tipo_token(String token) {
 
 /**
  * str_dup: String -> String (Función auxiliar)
- * Asigna el espacio en necesario para duplicar un string a otro
+ * Asigna el espacio necesario para duplicar un string a otro
  */
 
 String str_dup(const String s) {

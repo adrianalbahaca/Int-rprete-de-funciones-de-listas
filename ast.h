@@ -18,13 +18,19 @@ typedef enum {
 } TipoDeNodo;
 
 /**
+ * Se define la cant. de hijos posibles que puede tener cada nodo
+ */
+#define CANT_HIJOS 3
+
+/**
  * Se define la estructura general de un nodo de un árbol. Tiene un máx. de
  * 3 hijos cada uno
  */
 typedef struct {
     TipoDeNodo tipo;
     String lexema;
-    struct ASTNodo* hijos[3];
+    int num_hijos;
+    struct ASTNodo* hijos[CANT_HIJOS];
 } ASTNodo;
 
 /**
