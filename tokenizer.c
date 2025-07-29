@@ -7,6 +7,10 @@
 #include <ctype.h>
 #include <stdbool.h>
 
+const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+
+const String comandos[] = {"deff", "defl", "apply", "search"};
+
 /* ------ Funciones Auxiliares ------ */
 
 /**
@@ -15,8 +19,8 @@
  */
 bool es_primitiva(String funcion) {
 
-  for (int i = 0; i < (sizeof(primitivas)/sizeof(primitivas[0])); i++) {
-    if (strcmp(funcion, primitivas[i])) {
+  for (int i = 0; i < (int)strlen(funcion); i++) {
+    if (strcmp(funcion, primitivas[i]) == 0) {
       return true;
     }
   }
@@ -29,7 +33,7 @@ bool es_primitiva(String funcion) {
  * Retorna true si un string solo tiene numeros. Sino, retorna false
  */
 bool es_digito(String numero) {
-  for (int i = 0; i < (sizeof(numero) / sizeof(numero[0])); i++) {
+  for (int i = 0; i < (int)strlen(numero); i++) {
     if(!isdigit(numero[i])) {
       return false;
     }
@@ -42,11 +46,21 @@ bool es_digito(String numero) {
  * Retorna true si la definicion es válida. Sino, es false
  */
 bool es_def_valida(String def) {
-  if (isalpha(def[0]) || def[0] == '_') {
-    for (int i = 1; i < strlen(def); i++) {
-      if
-    }
+
+  // Si empieza con un número o un caracter no permitido, no es def válida
+  if(!(isalpha(def[0]) || (def[0] == '_'))) return false;
+
+  // Si dentro del string hay elementos no válidos, no es def válida
+  for (int i = 1; i < (int)strlen(def); i++) {
+    if(!(isalnum(def[i]) || def[i] == '_')) return false;
   }
+
+  const int tamano = sizeof(comandos) / sizeof(comandos[0]);
+  for (int j = 0; j < tamano; j++) {
+    if (strcmp(def, comandos[j]) == 0) return false;
+  }
+
+  return true;
 }
 
 /**
@@ -58,7 +72,12 @@ TipoDeToken tipo_token(String token) {
 
   TipoDeToken tipo;
 
-  // Primero, verifico si el token es un símbolo válido
+  // Primero, verifico si el token no es nulo
+
+  if (token == NULL) {
+    tipo = TOKEN_EOF;
+    return tipo;
+  }
 
   if (strlen(token) == 1 && ispunct(token[0])) {
     switch(token[0]) {
@@ -80,6 +99,9 @@ TipoDeToken tipo_token(String token) {
       case ',':
         tipo = TOKEN_COMA;
         break;
+      case '=':
+        tipo = TOKEN_IGUAL;
+        break;
       default:
         tipo = TOKEN_ERROR;
         break;
@@ -89,16 +111,16 @@ TipoDeToken tipo_token(String token) {
   // Sino, verifico si es un tipo de palabra válida
   
   else {
-    if (strcmp(token, "deff")) {
+    if (strcmp(token, "deff") == 0) {
       tipo = TOKEN_DEFF;
     }
-    else if (strcmp(token, "defl")) {
+    else if (strcmp(token, "defl") == 0) {
       tipo = TOKEN_DEFL;
     }
-    else if (strcmp(token, "apply")) {
+    else if (strcmp(token, "apply") == 0) {
       tipo = TOKEN_APPLY;
     }
-    else if (strcmp(token, "search")) {
+    else if (strcmp(token, "search") == 0) {
       tipo = TOKEN_SEARCH;
     }
     else if (es_primitiva(token)) {
@@ -107,7 +129,7 @@ TipoDeToken tipo_token(String token) {
     else if (es_digito(token)) {
       tipo = TOKEN_DIGITO;
     }
-    else if(es_def_valido(token)) {
+    else if(es_def_valida(token)) {
       tipo = TOKEN_DEF;
     }
     else {
