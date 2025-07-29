@@ -17,7 +17,7 @@ Elementos ::= DIGITO COMA Elementos | DIGITO | e
 ```
 ## Definición de aplicación
 ```
-Apply ::= "apply" DEF DEF | "apply DEF" COR_ABRE Elementos COR_CIERRA
+Apply ::= "apply" FUNC DEF | "apply" FUNC LISTA
 ```
 ## Definición de búsqueda
 ```
