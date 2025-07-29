@@ -190,10 +190,12 @@ TokenList anadir_token(TokenList l, String token, TipoDeToken tipo) {
 
   // Caso 1: Lista vacía
   if (l->head == NULL && l->tail == NULL) {
+    nodo->ant = NULL;
     l->head = l->tail = nodo;
   }
   else {
     l->tail->sig = nodo;
+    nodo->ant = l->tail;
     l->tail = nodo;
   }
 

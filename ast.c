@@ -84,15 +84,25 @@ void agregar_hijo(ASTNodo* padre, ASTNodo* hijo) {
  */
 ASTNodo* Search() {
 
-    match(TOKEN_SEARCH);
+    if(!match(TOKEN_SEARCH)) return NULL;
     ASTNodo* search = crear_nodo(AST_SEARCH, NULL);
 
-    match(TOKEN_LLAVE_ABRE);
+    if(!match(TOKEN_LLAVE_ABRE)) {
+        liberar_arbol(search);
+        return NULL;
+    }
 
     ASTNodo* listas = Listas();
+    if (listas == NULL) {
+        liberar_arbol(search);
+        return NULL;
+    }
     agregar_hijo(search, listas);
 
-    match(TOKEN_LLAVE_CIERRA);
+    if(!match(TOKEN_LLAVE_CIERRA)) {
+        liberar_arbol(search);
+        return NULL;
+    }
 
     return search;
 }
@@ -105,14 +115,24 @@ ASTNodo* Search() {
  */
 ASTNodo* Apply() {
 
-    match(TOKEN_APPLY);
+    if(!match(TOKEN_APPLY)) return NULL;
     ASTNodo* apply = crear_nodo(AST_APPLY, NULL);
 
     ASTNodo* func = Func();
+    if(func == NULL) {
+        liberar_arbol(apply);
+        return NULL;
+    }
     agregar_hijo(apply, func);
 
     ASTNodo* lista = Lista();
+    if(lista == NULL) {
+        liberar_arbol(apply);
+        return NULL;
+    }
     agregar_hijo(apply, lista);
+
+    return apply;
 }
 
 /**
@@ -122,19 +142,26 @@ ASTNodo* Apply() {
  * Si la cumple, devuelve un nodo de tipo DEFL con los elementos de la siguiente
  */
 ASTNodo* Defl() {
-    match(TOKEN_DEFL);
+    if(!match(TOKEN_DEFL)) return NULL;
     ASTNodo* defl = crear_nodo(AST_DEFL, NULL);
 
-    ASTNodo* def = crear_nodo(AST_DEF, siguiente->token);
-    match(TOKEN_DEF);
+    if(!match(TOKEN_DEF)) {
+        liberar_arbol(defl);
+        return NULL;
+    }
+    ASTNodo* def = crear_nodo(AST_DEF, siguiente->ant->token);
     agregar_hijo(defl, def);
 
-    match(TOKEN_IGUAL);
-    match(TOKEN_COR_ABRE);
+    if(!match(TOKEN_IGUAL) && !match(TOKEN_COR_ABRE)) {
+        liberar_arbol(defl);
+        return NULL;
+    }
 
     ASTNodo* elementos = Elementos();
-
-    match(TOKEN_COR_CIERRA);
+    if (elementos == NULL || !match(TOKEN_COR_CIERRA)) {
+        liberar_arbol(defl);
+        return NULL;
+    }
 
     agregar_hijo(defl, elementos);
 
@@ -151,35 +178,66 @@ ASTNodo* Defl() {
 ASTNodo* Deff() {
     
     // Se empieza con el nodo DEFF
-    match(TOKEN_DEFF);
+    if (!match(TOKEN_DEFF)) return NULL;
     ASTNodo* deff = crear_nodo(AST_DEFF, NULL);
 
     // Luego, sigue un nodo DEF
-    ASTNodo* def = crear_nodo(AST_DEF, siguiente->token);
-    match(TOKEN_DEF);
+    if (!match(TOKEN_DEF)) {
+        liberar_arbol(deff);
+        return NULL;
+    }
+
+    ASTNodo* def = crear_nodo(AST_DEF, siguiente->ant->token);
     agregar_hijo(deff, def);
 
-    match(TOKEN_IGUAL);
+
+    if (!match(TOKEN_IGUAL)) {
+        liberar_arbol(deff);
+        return NULL;
+    }
 
     // Luego, tengo que ir guardando la siguiente de funciones
     ASTNodo* funcs = Funcs();
+    if (funcs == NULL) {
+        liberar_arbol(deff);
+        return NULL;
+    }
+    
+    // Si se detecta algún token de angulo, es una repetición
 
-    if (siguiente->tipo == TOKEN_ANG_ABRE) {
-        match(TOKEN_ANG_ABRE);
+    if(match(TOKEN_ANG_ABRE)) {
 
+        // Se busca la segunda lista de tokens
         ASTNodo* funcs2 = Funcs();
-        
-        match(TOKEN_ANG_CIERRA);
 
+        /* Si no se cierra el ángulo o la segunda lista de funciones
+        tiene algún problema, borrar todo y avisar error */
+        if(!match(TOKEN_ANG_CIERRA) || funcs2 == NULL) {
+            liberar_arbol(funcs);
+            liberar_arbol(funcs2);
+            liberar_arbol(def);
+            return NULL;
+        }
+
+        // Buscar tercera lista de funciones
         ASTNodo* funcs3 = Funcs();
 
-        ASTNodo* repeticion = crear_nodo(AST_REP, NULL);
-        agregar_hijo(repeticion, funcs);
-        agregar_hijo(repeticion, funcs2);
-        agregar_hijo(repeticion, funcs3);
-        agregar_hijo(deff, repeticion);
+        // Si algo sale mal con la tercera lista, borrar todo
+        if(funcs3 == NULL) {
+            liberar_arbol(funcs);
+            liberar_arbol(funcs2);
+            liberar_arbol(def);
+            return NULL;
+        }
+
+        // Si todo sale bien, crear un nodo de repetición
+        ASTNodo* rep = crear_nodo(AST_REP, NULL);
+        agregar_hijo(rep, funcs);
+        agregar_hijo(rep, funcs2);
+        agregar_hijo(rep, funcs3);
+        agregar_hijo(deff, rep);
     }
-    else {
+    else { // Si no es repetición, simplemente meter la lista de funciones y retornar
         agregar_hijo(deff, funcs);
     }
 

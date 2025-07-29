@@ -34,6 +34,7 @@ struct _TokenNodo {
   String token;
   TipoDeToken tipo;
   struct _TokenNodo *sig;
+  struct _TokenNodo *ant;
 };
 
 typedef struct _TokenNodo TokenNodo;
