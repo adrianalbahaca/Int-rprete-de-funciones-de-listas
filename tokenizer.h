@@ -10,10 +10,10 @@
  */
 
 /**
- * Por convección, se declara char* como string
+ * Por conveniencia, se declara char* como string
  */
 
-typedef char *String;
+typedef char* String;
 
 /**
  * Se declara la lista de tipos de tokens que puede tener cada token
@@ -22,12 +22,12 @@ typedef enum {
   TOKEN_DEFF, TOKEN_DEFL, TOKEN_APPLY, TOKEN_SEARCH,
   TOKEN_DEF, TOKEN_PRIMITIVA, TOKEN_DIGITO, TOKEN_IGUAL, TOKEN_COR_ABRE,
   TOKEN_COR_CIERRA, TOKEN_LLAVE_ABRE, TOKEN_LLAVE_CIERRA, TOKEN_COMA,
-  TOKEN_PUNTO_COMA, TOKEN_ERROR, TOKEN_EOF
+  TOKEN_PUNTO_COMA, TOKEN_ANG_ABRE, TOKEN_ANG_CIERRA, TOKEN_ERROR, TOKEN_EOF
 } TipoDeToken;
 
 /**
  * Se declara la lista de tokens como una lista simplemente enlazada que guarda
- * cadenas
+ * el token como un String y el tipo de token
  */
 
 struct _TokenNodo {

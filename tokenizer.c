@@ -15,7 +15,7 @@ const String comandos[] = {"deff", "defl", "apply", "search"};
 
 /**
  * es_primitiva: String -> bool
- * Detecta si un string es alguna función primitiva
+ * Retorna true si el string dado es una función primitiva. Si no lo es, retorna falso
  */
 bool es_primitiva(String funcion) {
 
@@ -101,6 +101,12 @@ TipoDeToken tipo_token(String token) {
         break;
       case '=':
         tipo = TOKEN_IGUAL;
+        break;
+      case '<':
+        tipo = TOKEN_ANG_ABRE;
+        break;
+      case '>':
+        tipo = TOKEN_ANG_CIERRA;
         break;
       default:
         tipo = TOKEN_ERROR;
