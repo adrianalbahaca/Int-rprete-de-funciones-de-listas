@@ -28,11 +28,12 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
 (Notar que pueden haber pares de listas que no tengan solución)
 
 # Cosas a hacer:
+ - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
  - [x] Crear una función que tokenize cada comando que escriba el usuario <!-- Funciones que no puede declarar el usuario -->
- - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
- - [ ] Diseñar los nodos y las funciones asociadas al AST
- - [ ] Definir y guardar funciones primitivas <!-- Enum? -->
- - [ ] Definir la función composición, que guarda funciones de listas, para después usarlas más adelante <!-- Requerirá algún tipo de recursión -->
- - [ ] Definir una definición de listas directa <!-- Simple -->
- - [ ] Definir la búsqueda entre pares de listas <!-- Esta parece la parte más compleja -->
+ - [ ] Definir la estructura del AST <!-- Es siquiera necesario armarlo? -->
+ - [ ] Implementar un parser recursivo descendiente <!-- Debe armar el AST a medida de que se ejecuta -->
+ - [ ] Definir cómo se van a guardar las funciones y las listas <!-- Muy probablemente listas SE en una tabla hash -->
+ - [ ] Implementar el guardado de las funciones y las listas ("deff", "defl") <!-- También cómo borro esto -->
+ - [ ] Implementar cómo se aplica las funciones en las listas ("apply") <!-- Esto debe ser bastante sencillo -->
+ - [ ] Implementar el algoritmo de búsqueda entre funciones <!-- Esta debe ser la parte más compleja -->
