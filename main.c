@@ -9,7 +9,10 @@ int main(void) {
     printf("Trabajo final: Parser de funciones de listas. Adrian Albahaca | A-4708/2");
 
     // Se usa un booleano para indicar cuándo se sale del shell
+    TablaDeFunciones tablaF = inicializar_tabla_func();
+    TablaDeListas tablaL = inicializar_tabla_listas();
     bool quit = true;
+    
     while(quit) {
         
         String command = getInput("==> ");
@@ -30,7 +33,7 @@ int main(void) {
         /**
          * TODO: Crear una función que recibe el AAS y ejecuta cada instrucción de cada nodo
          */
-        execute(ast);
+        execute(ast, tablaF, tablaL);
     }
     return 0;
 }
