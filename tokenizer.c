@@ -129,6 +129,9 @@ TipoDeToken tipo_token(String token) {
     else if (strcmp(token, "search") == 0) {
       tipo = TOKEN_SEARCH;
     }
+    else if (strcmp(token, "quit") == 0) {
+      tipo = TOKEN_QUIT;
+    } 
     else if (es_primitiva(token)) {
       tipo = TOKEN_PRIMITIVA;
     }

@@ -8,13 +8,13 @@
 
 typedef enum {
     /* Estos son los tipos de nodo raíz */
-    AST_SENTENCIA, AST_DEFF, AST_DEFL, AST_APPLY, AST_SEARCH,
+    AST_SENTENCIA, AST_DEFF, AST_DEFL, AST_APPLY, AST_SEARCH, AST_QUIT,
 
     /* Estos son tipos de nodo internos */
     AST_FUNCS, AST_FUNC, AST_REP, AST_LISTAS, AST_LISTA, AST_ELEMENTOS,
 
     /* Esto son tipos de nodos hoja */
-    AST_DEF, AST_PRIMITIVA, AST_DIGITO
+    AST_DEF, AST_PRIMITIVA, AST_DIGITO, AST_ERROR
 } TipoDeNodo;
 
 /**
@@ -26,11 +26,11 @@ typedef enum {
  * Se define la estructura general de un nodo de un árbol. Tiene un máx. de
  * 3 hijos cada uno
  */
-typedef struct {
+typedef struct _ASTNodo {
     TipoDeNodo tipo;
     String lexema;
     int num_hijos;
-    struct ASTNodo* hijos[CANT_HIJOS];
+    struct _ASTNodo* hijos[CANT_HIJOS];
 } ASTNodo;
 
 /**
@@ -44,5 +44,10 @@ typedef ASTNodo* ASTTree;
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
 ASTTree parse(TokenList tokens); // Sentencia ::= Definicion ';' | Aplicacion  ';' | Busqueda ';'
+
+/**
+ * 
+ */
+void liberar_arbol(ASTTree arbol);
 
 #endif /* __AST__ */
