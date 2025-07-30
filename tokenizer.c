@@ -7,9 +7,9 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+static const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
 
-const String comandos[] = {"deff", "defl", "apply", "search"};
+static const String comandos[] = {"deff", "defl", "apply", "search"};
 
 /* ------ Funciones Auxiliares ------ */
 
@@ -19,7 +19,7 @@ const String comandos[] = {"deff", "defl", "apply", "search"};
  */
 bool es_primitiva(String funcion) {
 
-  for (int i = 0; i < (int)strlen(funcion); i++) {
+  for (int i = 0; i < 6; i++) {
     if (strcmp(funcion, primitivas[i]) == 0) {
       return true;
     }

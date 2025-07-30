@@ -161,6 +161,8 @@ ASTNodo* Primitiva(String primitiva) {
  * Func: void -> ASTNodo*
  * Crea una función de tipo DEF o tipo PRIMITIVA. Si el token no es de esos tipos,
  * retorna NULL
+ * Sigue la siguiente regla gramatical:
+ * => Func ::= DEF | PRIMITIVA
  */
 ASTNodo* Func() {
     ASTNodo* func = crear_nodo(AST_FUNC, NULL);
@@ -215,8 +217,11 @@ ASTNodo* Rep() {
  * Elementos: void -> ASTNodo*
  * Crea un nodo de tipo ELEMENTOS, que debe tener un nodo hijo DIGITO y,
  * opcionalmente, otro nodo hijo ELEMENTOS
+ * Sigue la siguiente regla gramática:
+ * => Elementos ::= DIGITO COMA Elementos | DIGITO | e
  */
 ASTNodo* Elementos() {
+
     ASTNodo* digito = NULL;
     if (match(TOKEN_DIGITO)) {
         digito = Digito(siguiente->ant->token);
@@ -225,7 +230,11 @@ ASTNodo* Elementos() {
         return NULL;
     }
 
-    ASTNodo* nextElem = Elementos();
+    ASTNodo* nextElem = NULL;
+    if (match(TOKEN_COMA)) {
+        nextElem = Elementos();
+    }
+
     ASTNodo* elem = crear_nodo(AST_ELEMENTOS, NULL);
 
     agregar_hijo(elem, digito);
@@ -237,27 +246,35 @@ ASTNodo* Elementos() {
 /**
  * Lista: void -> ASTNodo*
  * Crea un nodo de tipo LISTA
+ * Sigue la siguiente regla gramatical:
+ * => Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
  */
 ASTNodo* Lista() {
-    if(!match(TOKEN_COR_ABRE)) {
+    if(match(TOKEN_DEF)) {
+        return crear_nodo(AST_DEF, siguiente->ant->token);
+    }
+    else if (match(TOKEN_COR_ABRE)) {
+        ASTNodo* elem = Elementos();
+        if(!match(TOKEN_COR_CIERRA)) {
+            return NULL;
+        }
+
+        ASTNodo* lista = crear_nodo(AST_LISTA, NULL);
+        agregar_hijo(lista, elem);
+
+        return lista;
+    }
+    else {
         return NULL;
     }
-
-    ASTNodo* elem = Elementos();
-    if(elem == NULL && !match(TOKEN_COR_CIERRA)) {
-        return NULL;
-    }
-
-    ASTNodo* lista = crear_nodo(AST_LISTA, NULL);
-    agregar_hijo(lista, elem);
-
-    return lista;
 }
 
 /**
  * Listas: void -> ASTNodo*
  * Crea un nodo de tipo LISTAS que contiene dos nodos de tipo LISTA y, opcionalmente
  * un nodo de tipo LISTAS
+ * Sigue la siguiente regla gramatical:
+ * => Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
  */
 ASTNodo* Listas() {
     ASTNodo* lista1 = Lista();
@@ -265,17 +282,29 @@ ASTNodo* Listas() {
         return NULL;
     }
 
-    ASTNodo* lista2 = Lista();
-    if(lista2 == NULL) {
+    if (!match(TOKEN_COMA)) {
+        liberar_arbol(lista1);
         return NULL;
     }
 
-    ASTNodo* listas = Listas();
-    
+    ASTNodo* lista2 = Lista();
+    if(lista2 == NULL) {
+        liberar_arbol(lista1);
+        return NULL;
+    }
+
     ASTNodo* pares = crear_nodo(AST_LISTAS, NULL);
-    agregar_hijo(pares, lista1);
-    agregar_hijo(pares, lista2);
-    agregar_hijo(pares, listas);
+    if (match(TOKEN_PUNTO_COMA)) {
+        ASTNodo* listas = Listas();
+
+        agregar_hijo(pares, lista1);
+        agregar_hijo(pares, lista2);
+        agregar_hijo(pares, listas);
+    }
+    else {
+        agregar_hijo(pares, lista1);
+        agregar_hijo(pares, lista2);
+    }
 
     return pares;
 }
@@ -303,10 +332,10 @@ ASTNodo* Quit() {
  */
 ASTNodo* Search() {
 
-    if(match(TOKEN_SEARCH)) return NULL;
+    if(!match(TOKEN_SEARCH)) return NULL;
     ASTNodo* search = crear_nodo(AST_SEARCH, NULL);
 
-    if(match(TOKEN_LLAVE_ABRE)) {
+    if(!match(TOKEN_LLAVE_ABRE)) {
         liberar_arbol(search);
         return NULL;
     }
@@ -318,7 +347,7 @@ ASTNodo* Search() {
     }
     agregar_hijo(search, listas);
 
-    if(match(TOKEN_LLAVE_CIERRA)) {
+    if(!match(TOKEN_LLAVE_CIERRA)) {
         liberar_arbol(search);
         return NULL;
     }
@@ -334,7 +363,7 @@ ASTNodo* Search() {
  */
 ASTNodo* Apply() {
 
-    if(match(TOKEN_APPLY)) return NULL;
+    if(!match(TOKEN_APPLY)) return NULL;
     ASTNodo* apply = crear_nodo(AST_APPLY, NULL);
 
     ASTNodo* func = Func();
