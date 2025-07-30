@@ -341,7 +341,7 @@ ASTNodo* ListaSinDef() {
  * del programa y terminarlo
  */
 ASTNodo* Quit() {
-    if(match(TOKEN_QUIT)) return NULL;
+    if(!match(TOKEN_QUIT)) return NULL;
     ASTNodo* quit = crear_nodo(AST_QUIT, NULL);
     return quit;
 }
