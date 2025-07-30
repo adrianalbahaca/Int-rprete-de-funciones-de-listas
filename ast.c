@@ -487,7 +487,7 @@ ASTTree parse(TokenList tokens) {
 
             hijo = Deff();
             if(hijo == NULL) break;
-            if(match(TOKEN_PUNTO_COMA)) break;
+            if(!match(TOKEN_PUNTO_COMA)) break;
             tree = crear_nodo(AST_SENTENCIA, NULL);
             agregar_hijo(tree, hijo);
             break;
@@ -505,7 +505,7 @@ ASTTree parse(TokenList tokens) {
 
             hijo = Apply();
             if (hijo == NULL) break;
-            if(match(TOKEN_PUNTO_COMA)) break;
+            if(!match(TOKEN_PUNTO_COMA)) break;
             tree = crear_nodo(AST_SENTENCIA, NULL);
             agregar_hijo(tree, hijo);
             break;
@@ -514,7 +514,7 @@ ASTTree parse(TokenList tokens) {
 
             hijo = Search();
             if (hijo == NULL) break;
-            if(match(TOKEN_PUNTO_COMA)) break;
+            if(!match(TOKEN_PUNTO_COMA)) break;
             tree = crear_nodo(AST_SENTENCIA, NULL);
             agregar_hijo(tree, hijo);
             break;
