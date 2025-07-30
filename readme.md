@@ -31,8 +31,8 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta <!-- Consultar con el profesor de LFyC -->
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
  - [x] Crear una función que tokenize cada comando que escriba el usuario <!-- Funciones que no puede declarar el usuario -->
- - [ ] Definir la estructura del AST <!-- Es siquiera necesario armarlo? -->
- - [ ] Implementar un parser recursivo descendiente <!-- Debe armar el AST a medida de que se ejecuta -->
+ - [x] Definir la estructura del AST <!-- Es siquiera necesario armarlo? -->
+ - [x] Implementar un parser recursivo descendiente <!-- Debe armar el AST a medida de que se ejecuta -->
  - [ ] Definir cómo se van a guardar las funciones y las listas <!-- Muy probablemente listas SE en una tabla hash -->
  - [ ] Implementar el guardado de las funciones y las listas ("deff", "defl") <!-- También cómo borro esto -->
  - [ ] Implementar cómo se aplica las funciones en las listas ("apply") <!-- Esto debe ser bastante sencillo -->
