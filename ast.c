@@ -361,23 +361,28 @@ ASTNodo* Apply() {
  * Si la cumple, devuelve un nodo de tipo DEFL con los elementos de la siguiente
  */
 ASTNodo* Defl() {
-    if(match(TOKEN_DEFL)) return NULL;
+    if(!match(TOKEN_DEFL)) return NULL;
     ASTNodo* defl = crear_nodo(AST_DEFL, NULL);
 
-    if(match(TOKEN_DEF)) {
+    if(!match(TOKEN_DEF)) {
         liberar_arbol(defl);
         return NULL;
     }
     ASTNodo* def = Def(siguiente->ant->token);
     agregar_hijo(defl, def);
 
-    if(match(TOKEN_IGUAL) && !match(TOKEN_COR_ABRE)) {
+    if(!match(TOKEN_IGUAL)) {
+        liberar_arbol(defl);
+        return NULL;
+    }
+
+    if(!match(TOKEN_COR_ABRE)) {
         liberar_arbol(defl);
         return NULL;
     }
 
     ASTNodo* elementos = Elementos();
-    if (elementos == NULL || !match(TOKEN_COR_CIERRA)) {
+    if (!match(TOKEN_COR_CIERRA)) {
         liberar_arbol(defl);
         return NULL;
     }
