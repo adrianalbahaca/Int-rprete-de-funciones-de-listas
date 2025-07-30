@@ -308,6 +308,29 @@ ASTNodo* Listas() {
 
     return pares;
 }
+
+/**
+ * ListaSinDef: void -> ASTNodo*
+ * Hace algo similar a Lista(), pero no acepta un DEF como lista aceptable
+ * Sigue la siguiente regla gramatical:
+ * => ListaSinDef ::= COR_ABRE Elementos COR_CIERRA
+ */
+ASTNodo* ListaSinDef() {
+    if(!match(TOKEN_COR_ABRE)) {
+        return NULL;
+    }
+
+    ASTNodo* lista = crear_nodo(AST_LISTA, NULL);
+
+    ASTNodo* elementos = Elementos();
+    if (!match(TOKEN_COR_CIERRA)) {
+        liberar_arbol(lista);
+        return NULL;
+    }
+
+    agregar_hijo(lista, elementos);
+    return lista;
+}
 /* ------------------------------- */
 
 /* ------ Nodos raíz ------ */
@@ -386,37 +409,33 @@ ASTNodo* Apply() {
 /**
  * Defl: void -> ASTNodo*
  * Va revisando la gramática de la siguiente regla:
- * => Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
+ * => Defl ::= "defl" DEF IGUAL ListaSinDef
  * Si la cumple, devuelve un nodo de tipo DEFL con los elementos de la siguiente
  */
 ASTNodo* Defl() {
     if(!match(TOKEN_DEFL)) return NULL;
     ASTNodo* defl = crear_nodo(AST_DEFL, NULL);
 
-    if(!match(TOKEN_DEF)) {
+
+    ASTNodo* func = Func();
+    if(func == NULL) {
         liberar_arbol(defl);
         return NULL;
     }
-    ASTNodo* def = Def(siguiente->ant->token);
-    agregar_hijo(defl, def);
+    agregar_hijo(defl, func);
 
     if(!match(TOKEN_IGUAL)) {
         liberar_arbol(defl);
         return NULL;
     }
 
-    if(!match(TOKEN_COR_ABRE)) {
+    ASTNodo* lista = ListaSinDef();
+    if (lista == NULL) {
         liberar_arbol(defl);
         return NULL;
     }
 
-    ASTNodo* elementos = Elementos();
-    if (!match(TOKEN_COR_CIERRA)) {
-        liberar_arbol(defl);
-        return NULL;
-    }
-
-    agregar_hijo(defl, elementos);
+    agregar_hijo(defl, lista);
 
     return defl;
 }

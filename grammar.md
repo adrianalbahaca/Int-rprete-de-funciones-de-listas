@@ -12,7 +12,8 @@ Func ::= DEF | PRIMITIVA
 ```
 ## Definición de listas
 ```
-Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
+Defl ::= "defl" DEF IGUAL ListaSinDef
+ListaSinDef ::= COR_ABRE Elementos COR_CIERRA
 Elementos ::= DIGITO COMA Elementos | DIGITO | e
 ```
 ## Definición de aplicación
