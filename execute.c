@@ -8,40 +8,6 @@
 /**
  * TODO: Definir las funciones que sigan la instrucción del nodo raíz del arbol
  */
-
-/**
- * hash: String -> int
- * Genera un número específico para la cadena dada
- */
-int hash(String s) {
-
-    int hash = 0;
-    int length = strlen(s);
-    for (int i = 0; i < length; i++) {
-        hash = hash * 31 + s[i];
-    }
-    return hash;
-}
-
-/**
- * agregar_def: TablaDeFunciones String Definicion -> void
- * Guarda en la tabla hash la función definida. Busca manejar las colisiones
- */
-void agregar_def(TablaDeFunciones tabla, String nombre, Definicion def) {
-
-    int pos = hash(nombre) % CANT_FUNCIONES;
-    if (tabla->funciones[pos] == NULL) {
-        tabla->funciones[pos] = def;
-        tabla->capacidad++;
-        return tabla;
-    }
-    else {
-        printf("ERROR: Esta función ya está definida\n");
-        return;
-    }
-
-}
-
 /**
  * inicializar_tabla_func: void -> TablaDeFunciones
  * Retorna una tabla de funciones vacía
@@ -73,12 +39,72 @@ TablaDeListas inicializar_tabla_listas() {
 }
 
 /**
+ * tipo_primitiva: String -> TipoDeFuncion
+ * Determina qué tipo de primitiva es la cadena dada
+ */
+TipoDeFuncion tipo_primitiva(String s) {
+    if (strcmp(s, "0i")) {
+        return PRIMITIVA_0I;
+    }
+    else if (strcmp(s, "0d")) {
+        return PRIMITIVA_0D;
+    }
+    else if (strcmp(s, "Si")) {
+        return PRIMITIVA_SI;
+    }
+    else if (strcmp(s, "Sd")) {
+        return PRIMITIVA_SD;
+    }
+    else if (strcmp(s, "Di")) {
+        return PRIMITIVA_DI;
+    }
+    else return PRIMITIVA_SD;
+}
+
+/**
+ * hash: String -> int
+ * Genera un número específico para la cadena dada
+ */
+int hash(String s) {
+
+    int hash = 0;
+    int length = strlen(s);
+    for (int i = 0; i < length; i++) {
+        hash = hash * 31 + s[i];
+    }
+    return hash;
+}
+
+/**
+ * agregar_def: TablaDeFunciones String Definicion -> void
+ * Guarda en la tabla hash la función definida. Busca manejar las colisiones
+ */
+void agregar_def(TablaDeFunciones tabla, String nombre, Definicion def) {
+
+    int pos = hash(nombre) % CANT_FUNCIONES;
+    if (tabla->funciones[pos] == NULL) {
+        tabla->funciones[pos] = def;
+        tabla->capacidad++;
+        return;
+    }
+    else {
+        printf("ERROR: Esta función ya está definida\n");
+        return;
+    }
+
+}
+
+/**
  * tipo_funcion: ASTNodo* -> Funcion*
  * Toma un nodo de tipo FUNC y retorna una función de tipo DEF o PRIMITIVA
  */
 Funcion* tipo_funcion(ASTNodo* f) {
     if (f->tipo == AST_PRIMITIVA) {
-
+        Funcion* primitiva = malloc(sizeof(Funcion));
+        primitiva->tipo = tipo_primitiva(f->lexema);
+        primitiva->def = NULL;
+        primitiva->next = NULL;
+        return primitiva;
     }
     else {
         Funcion* retorno = malloc(sizeof(Funcion));
@@ -122,6 +148,24 @@ Definicion crear_lista_de_funciones(String nombre) {
     def->def = nombre;
     return def;
 
+}
+
+/**
+ * elementos: ASTNodo* -> Lista
+ * Arma, de forma recursiva, una lista de números
+ */
+Lista elementos(ASTNodo* elem) {
+    
+}
+
+/**
+ * crear_lista: ASTNodo* -> Lista
+ * Retorna una lista de enteros
+ */
+Lista crear_lista(ASTNodo* l) {
+    if (l->tipo == AST_LISTA) {
+        return elementos(l->hijos[0]);
+    }
 }
 /**
  * comando: ASTNodo* TablaDeFunciones TablaDeListas -> void
