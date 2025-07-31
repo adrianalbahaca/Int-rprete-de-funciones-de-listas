@@ -1,7 +1,7 @@
 CC := gcc
 CFLAGS := -Wall -Werror -Wextra -std=c99
 
-test: test.o tokenizer.o ast.o
+test: test.o tokenizer.o ast.o execute.o
 	$(CC) -g -o $@ $^ $(CFLAGS)
 	rm *.o
 
@@ -13,3 +13,9 @@ tokenizer.o : tokenizer.c tokenizer.h
 
 ast.o: ast.c ast.h tokenizer.h
 	$(CC) -g -c $< $(CFLAGS)
+
+execute.o: execute.c execute.h ast.h
+	$(CC) -g -c $< $(CFLAGS)
+
+clean:
+	rm *.o

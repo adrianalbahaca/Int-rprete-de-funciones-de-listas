@@ -1,5 +1,6 @@
 #ifndef __EXECUTE__
 #define __EXECUTE__
+#include "ast.h"
 
 /**
  * Para las tablas hash, se define un tamaño predeterminado para empezar
@@ -28,11 +29,11 @@ typedef struct _Funcion {
 } Funcion;
 
 typedef struct _Def {
-    Funcion* funciones;
     char* def;
+    Funcion* funciones;
 } Def;
 
-typedef struct Def* Definicion;
+typedef Def* Definicion;
 
 /**
  * Las listas se definen como una lista simplemente enlazada con una estructura
@@ -65,18 +66,30 @@ typedef struct _TablaDeFunciones {
     int capacidad;
 } TablaF;
 
-typedef struct TablaF* TablaDeFunciones;
+typedef TablaF* TablaDeFunciones;
 
 typedef struct _TablaDeListas {
     Lista listas[CANT_LISTAS];
     int capacidad;
 } TablaL;
 
-typedef struct TablaL* TablaDeListas;
+typedef TablaL* TablaDeListas;
 
 /**
  * TODO: Definir una lista de funciones primitivas ya conocidas, de donde se arman otras funciones
  */
+
+/**
+ * inicializar_tabla_func: void -> TablaDeFunciones
+ * Retorna una tabla de funciones vacía
+ */
+TablaDeFunciones inicializar_tabla_func();
+
+/**
+ * inicializar_tabla_listas(): void -> TablaDeListas
+ * Retorna una tabla de listas vacía
+ */
+TablaDeListas inicializar_tabla_listas();
 
 /**
  * execute: ASTTree -> void
