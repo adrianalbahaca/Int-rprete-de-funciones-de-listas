@@ -24,16 +24,16 @@ typedef enum {
  */
 typedef struct _Funcion {
     TipoDeFuncion tipo;
-    char* def;
+    String def;
     struct _Funcion* next;
 } Funcion;
 
 typedef struct _Def {
-    char* def;
+    String def;
     Funcion* funciones;
-} Def;
+} Comp;
 
-typedef Def* Definicion;
+typedef Comp* Composicion;
 
 /**
  * Las listas se definen como una lista simplemente enlazada con una estructura
@@ -61,29 +61,35 @@ typedef struct _Lista* Lista;
  * hash que apuntan a sus respectivos elementos
  */
 
+typedef struct {
+    Composicion funcion;
+} CasillaTablaFunciones;
+
 typedef struct _TablaDeFunciones {
-    Definicion funciones[CANT_FUNCIONES];
+    CasillaTablaFunciones* funciones;
+    int numElem;
     int capacidad;
 } TablaF;
 
 typedef TablaF* TablaDeFunciones;
 
+typedef struct {
+    Lista lista;
+} CasillaTablaListas;
+
 typedef struct _TablaDeListas {
-    Lista listas[CANT_LISTAS];
+    CasillaTablaListas *listas;
+    int numElems;
     int capacidad;
 } TablaL;
 
 typedef TablaL* TablaDeListas;
 
 /**
- * TODO: Definir una lista de funciones primitivas ya conocidas, de donde se arman otras funciones
- */
-
-/**
  * inicializar_tabla_func: void -> TablaDeFunciones
  * Retorna una tabla de funciones vacía
  */
-TablaDeFunciones inicializar_tabla_func();
+TablaDeFunciones crear_tabla_funciones();
 
 /**
  * inicializar_tabla_listas(): void -> TablaDeListas
@@ -95,6 +101,6 @@ TablaDeListas inicializar_tabla_listas();
  * execute: ASTTree -> void
  * Ejecuta todas las instrucciones dentro del AST
  */
-void execute(ASTTree tree, TablaDeFunciones TablaF, TablaDeListas TablaL);
+void execute(ASTTree tree, TablaDeFunciones TablaF);
 
 #endif /* __EXECUTE__ */

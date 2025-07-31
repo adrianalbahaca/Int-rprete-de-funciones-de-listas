@@ -4,45 +4,19 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 /**
  * TODO: Definir las funciones que sigan la instrucción del nodo raíz del arbol
  */
-/**
- * inicializar_tabla_func: void -> TablaDeFunciones
- * Retorna una tabla de funciones vacía
- */
-TablaDeFunciones inicializar_tabla_func() {
 
-    TablaDeFunciones tabla = malloc(sizeof(TablaDeFunciones));
-    for (int i = 0; i < CANT_FUNCIONES; i++) {
-        tabla->funciones[i] = NULL;
-    }
-    tabla->capacidad = 0;
-    return tabla;
 
-}
-
-/**
- * inicializar_tabla_listas(): void -> TablaDeListas
- * Retorna una tabla de listas vacía
- */
-TablaDeListas inicializar_tabla_listas() {
-
-    TablaL* tabla = malloc(sizeof(TablaL));
-    for (int i = 0; i < CANT_LISTAS; i++) {
-        tabla->listas[i] = NULL;
-    }
-    tabla->capacidad = 0;
-    return tabla;
-
-}
 
 /**
  * tipo_primitiva: String -> TipoDeFuncion
  * Determina qué tipo de primitiva es la cadena dada
  */
-TipoDeFuncion tipo_primitiva(String s) {
+TipoDeFuncion tipo_funcion(String s) {
     if (strcmp(s, "0i")) {
         return PRIMITIVA_0I;
     }
@@ -58,7 +32,12 @@ TipoDeFuncion tipo_primitiva(String s) {
     else if (strcmp(s, "Di")) {
         return PRIMITIVA_DI;
     }
-    else return PRIMITIVA_SD;
+    else if(strcmp(s, "Dd")) {
+        return PRIMITIVA_DD;
+    }
+    else {
+        return FUNC_DEF;
+    }
 }
 
 /**
@@ -76,103 +55,107 @@ int hash(String s) {
 }
 
 /**
- * agregar_def: TablaDeFunciones String Definicion -> void
- * Guarda en la tabla hash la función definida. Busca manejar las colisiones
+ * crear_tabla_funciones: void -> TablaDeFunciones
+ * Crea una tabla de funciones vacía
  */
-void agregar_def(TablaDeFunciones tabla, String nombre, Definicion def) {
-
-    int pos = hash(nombre) % CANT_FUNCIONES;
-    if (tabla->funciones[pos] == NULL) {
-        tabla->funciones[pos] = def;
-        tabla->capacidad++;
-        return;
+TablaDeFunciones crear_tabla_funciones() {
+    TablaDeFunciones tabla = malloc(sizeof(TablaF));
+    assert(tabla != NULL);
+    tabla->funciones = malloc(sizeof(CasillaTablaFunciones) * CANT_FUNCIONES);
+    assert(tabla->funciones != NULL);
+    tabla->numElem = 0;
+    tabla->capacidad = CANT_FUNCIONES;
+    for (int i = 0; i < tabla->capacidad; i++) {
+        tabla->funciones[i].funcion = NULL;
     }
-    else {
-        printf("ERROR: Esta función ya está definida\n");
-        return;
-    }
-
+    return tabla;
 }
 
 /**
- * tipo_funcion: ASTNodo* -> Funcion*
- * Toma un nodo de tipo FUNC y retorna una función de tipo DEF o PRIMITIVA
+ * crear_tabla_listas: void -> TablaDeListas
+ * Crea una tabla de listas vacía
  */
-Funcion* tipo_funcion(ASTNodo* f) {
-    if (f->tipo == AST_PRIMITIVA) {
-        Funcion* primitiva = malloc(sizeof(Funcion));
-        primitiva->tipo = tipo_primitiva(f->lexema);
-        primitiva->def = NULL;
-        primitiva->next = NULL;
-        return primitiva;
+TablaDeListas crear_tabla_listas() {
+    TablaDeListas tabla = malloc(sizeof(TablaL));
+    assert(tabla != NULL);
+    tabla->listas = malloc(sizeof(Lista) * CANT_LISTAS);
+    assert (tabla->listas != NULL);
+    tabla->numElems = 0;
+    tabla->capacidad = CANT_LISTAS;
+    for (int i = 0; i < tabla->capacidad; i++) {
+        tabla->listas[i].lista = NULL;
+    }
+    return tabla;
+}
+
+/**
+ * agregar_def: TablaDeFunciones String Composicion -> void
+ * Agrega una composición de funciones a la tabla
+ */
+TablaDeFunciones agregar_def(TablaDeFunciones tabla, String nombre, Composicion comp) {
+    int pos = hash(nombre) % tabla->capacidad;
+    if (tabla->funciones[pos].funcion == NULL) {
+        tabla->funciones[pos].funcion = comp;
+        return tabla;
     }
     else {
-        Funcion* retorno = malloc(sizeof(Funcion));
-        retorno->tipo = FUNC_DEF;
-        retorno->def = str_dup(f->lexema);
-        retorno->next = NULL;
-        return retorno;
+        printf("Esta función ya está definida. No se va a guardar nada");
+        return tabla;
     }
+}
+
+/* ---------------------------------------------------------- */
+
+/**
+ * crear_funcion: ASTNodo* -> Funcion*
+ * Crea una función de tipo DEF o de tipo PRIMITIVA_...
+ */
+Funcion* crear_funcion(ASTNodo* tipo) {
+    Funcion* f = malloc(sizeof(Funcion));
+    f->tipo = tipo_funcion(tipo->hijos[0]->lexema);
+    if (f->tipo == FUNC_DEF) {
+        f->def = str_dup(tipo->hijos[0]->lexema);
+    }
+    f->next = NULL;
+    return f;
+}
+
+/**
+ * crear_composicion_funciones: String -> Composicion
+ * Crea una composición de funciones vacía
+ */
+Composicion crear_composicion_funciones(String nombre) {
+    Composicion funcion = malloc(sizeof(Comp));
+    funcion->def = str_dup(nombre);
+    funcion->funciones = NULL;
+    return funcion;
 }
 
 /**
  * agregar_funciones: ASTNodo* -> Funcion*
- * Va agregando cada función de forma recursiva. Si se llega a un punto nulo,
- * no se retorna nada
+ * crea la lista de funciones poco a poco, mientras va recorriendo el árbol
  */
-Funcion* agregar_funciones(ASTNodo* funciones) {
-
-    if (funciones == NULL) return NULL;
-
-    else if (funciones->tipo == AST_FUNCS) {
-        Funcion* funcion = agregar_funciones(funciones->hijos[0]);
-        Funcion* funcion2 = agregar_funciones(funciones->hijos[1]);
-        funcion->next = funcion2;
+Funcion* agregar_funciones(ASTNodo* func) {
+    if (func == NULL) return NULL;
+    else if (func->tipo == AST_FUNCS) {
+        Funcion* funcion = crear_funcion(func->hijos[0]);
+        funcion->next = agregar_funciones(func->hijos[1]);
         return funcion;
     }
-    else if(funciones->tipo == AST_FUNC) {
-        Funcion* funcion = tipo_funcion(funciones->hijos[0]);
-        return funcion;
-    }
-
-}
-
-/**
- * crear_lista_de_funciones: void -> Definición
- * Crea un nodo de Definición de funciones vacíos 
- */
-Definicion crear_lista_de_funciones(String nombre) {
-
-    Definicion def = malloc(sizeof(Def));
-    def->funciones = NULL;
-    def->def = nombre;
-    return def;
-
-}
-
-/**
- * elementos: ASTNodo* -> Lista
- * Arma, de forma recursiva, una lista de números
- */
-Lista elementos(ASTNodo* elem) {
-    
-}
-
-/**
- * crear_lista: ASTNodo* -> Lista
- * Retorna una lista de enteros
- */
-Lista crear_lista(ASTNodo* l) {
-    if (l->tipo == AST_LISTA) {
-        return elementos(l->hijos[0]);
+    else if (func->tipo == AST_REP) {
+        // Primero, creo las 3 partes de la función
+        Funcion* funcionPrincipio = crear_funcion(func->hijos[0]);
+        Funcion* funcionRep = crear_funcion(func->hijos[1]);
+        Funcion* funcionFin = crear_funcion(func->hijos[2]);
     }
 }
+
 /**
  * comando: ASTNodo* TablaDeFunciones TablaDeListas -> void
  * Verifica qué instrucción tiene, ya sea 'deff', 'defl', 'apply' o 'search'
  * y aplica según sea el caso
  */
-void comando(ASTNodo* sentencia, TablaDeFunciones TablaF, TablaDeListas TablaL) {
+void sentencia(ASTNodo* sentencia, TablaDeFunciones TablaF) {
 
     String nombre = NULL;
 
@@ -181,12 +164,12 @@ void comando(ASTNodo* sentencia, TablaDeFunciones TablaF, TablaDeListas TablaL) 
         case AST_DEFF:
 
             nombre = str_dup(sentencia->hijos[0]->lexema);
-            Definicion funciones = crear_lista_de_funciones(nombre);
-            funciones->funciones = agregar_funciones(sentencia->hijos[0]);
-            agregar_def(TablaF, nombre, funciones);
+            Composicion comp = crear_composicion_funciones(nombre);
+            comp->funciones = agregar_funciones(sentencia->hijos[1]);
+            TablaF = agregar_def(TablaF, nombre, comp);
             break;
 
-        case AST_DEFL:
+        /* case AST_DEFL:
 
             nombre = str_dup(sentencia->hijos[0]->lexema);
             Lista elementos = crear_lista(sentencia->hijos[1]->lexema);
@@ -195,24 +178,24 @@ void comando(ASTNodo* sentencia, TablaDeFunciones TablaF, TablaDeListas TablaL) 
 
         case AST_APPLY:
 
-            Definicion funcion = funcion_a_aplicar(sentencia->hijos[0]);
+            Composicion funcion = funcion_a_aplicar(sentencia->hijos[0]);
             Lista lista = lista_a_aplicar(sentencia->hijos[1]);
             aplicar_funcion(funcion, lista);
             break;
 
         case AST_SEARCH:
-            /**
+            *
              * TODO: Definir un algoritmo que busca entre las funciones hechas y primitivas
              * para convertir una lista L1 en otra lista L2. Tomar en cuenta que puede que
              * no haya solución
-             */
+             
             break;
 
         case AST_QUIT:
 
             borrar_tabla_listas(TablaL);
             borrar_tabla_funciones(TablaF);
-            break;
+            break;*/
         
         default:
             break;
@@ -223,12 +206,12 @@ void comando(ASTNodo* sentencia, TablaDeFunciones TablaF, TablaDeListas TablaL) 
  * execute: ASTTree TablaDeFunciones TablaDeListas -> void
  * Ejecuta todas las instrucciones dentro del AST
  */
-void execute(ASTTree tree, TablaDeFunciones TablaF, TablaDeListas TablaL) {
+void execute(ASTTree tree, TablaDeFunciones TablaF) {
 
     /* Entramos en el árbol como un personaje de una película de terror entra
     en un bosque oscuro */
 
-    comando(tree->hijos[0], TablaF, TablaL); // Este sería el hijo del nodo AST_SENTENCIA
+    sentencia(tree->hijos[0], TablaF); // Este sería el hijo del nodo AST_SENTENCIA
 
     /* Después, se borra todo el árbol */
     liberar_arbol(tree);

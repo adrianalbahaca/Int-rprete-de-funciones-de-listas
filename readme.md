@@ -37,3 +37,5 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [ ] Implementar el guardado de las funciones y las listas ("deff", "defl") <!-- También cómo borro esto -->
  - [ ] Implementar cómo se aplica las funciones en las listas ("apply") <!-- Esto debe ser bastante sencillo -->
  - [ ] Implementar el algoritmo de búsqueda entre funciones <!-- Esta debe ser la parte más compleja -->
+
+ # Al pendiente por más funciones
