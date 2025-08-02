@@ -1,4 +1,4 @@
-# Proyecto final de EDyA1: Parser de funciones de lista
+# Proyecto final de EDyA1: Parser de funciones de lista (EN PAUSA HASTA TERMINAR MESA DE EXÁMENES)
 Este proyecto trabaja con funciones de lista, analizando el input de un usuario, siguiendo una gramática que se asegure de que cumpla con la gramática dada en la práctica
 
 ## Funciones base:
