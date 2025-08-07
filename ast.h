@@ -15,6 +15,7 @@ typedef enum {
 
     /* Esto son tipos de nodos hoja */
     AST_DEF, AST_PRIMITIVA, AST_DIGITO, AST_ERROR
+    
 } TipoDeNodo;
 
 /**
