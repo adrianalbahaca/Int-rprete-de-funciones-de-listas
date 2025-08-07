@@ -9,6 +9,9 @@
  * 4. Símbolos: cosas como las comas, puntos y comas, corchetes angulados y llaves
  */
 
+const String comandos[] = {"deff", "defl", "apply", "search", "quit"};
+const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+
 /**
  * Por conveniencia, se declara char* como string
  */
@@ -19,10 +22,10 @@ typedef char* String;
  * Se declara la lista de tipos de tokens que puede tener cada token
  */
 typedef enum {
-  TOKEN_DEFF, TOKEN_DEFL, TOKEN_APPLY, TOKEN_SEARCH,
-  TOKEN_DEF, TOKEN_PRIMITIVA, TOKEN_DIGITO, TOKEN_IGUAL, TOKEN_COR_ABRE,
-  TOKEN_COR_CIERRA, TOKEN_LLAVE_ABRE, TOKEN_LLAVE_CIERRA, TOKEN_COMA,
-  TOKEN_PUNTO_COMA, TOKEN_ANG_ABRE, TOKEN_ANG_CIERRA, TOKEN_ERROR, TOKEN_EOF, TOKEN_QUIT
+  TOKEN_DEFF, TOKEN_DEFL, TOKEN_APPLY, TOKEN_SEARCH, TOKEN_QUIT,
+  TOKEN_DEF, TOKEN_PRIMITIVA, TOKEN_DIGITO,
+  TOKEN_IGUAL, TOKEN_COR_ABRE, TOKEN_COR_CIERRA, TOKEN_LLAVE_ABRE, TOKEN_LLAVE_CIERRA,
+  TOKEN_COMA,TOKEN_PUNTO_COMA, TOKEN_ANG_ABRE, TOKEN_ANG_CIERRA, TOKEN_ERROR, TOKEN_EOF,
 } TipoDeToken;
 
 /**
@@ -40,16 +43,10 @@ struct _TokenNodo {
 typedef struct _TokenNodo TokenNodo;
 
 /**
- * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
- * lista, por practicidad al añadir tokens
+ * str_dup: String -> String
+ * Asigna el espacio necesario para duplicar un string a otro
  */
-
-struct _TokenList {
-  TokenNodo *head;
-  TokenNodo *tail;
-};
-
-typedef struct _TokenList *TokenList;
+String str_dup(const String s);
 
 /**
  * getInput: String -> String
@@ -61,12 +58,6 @@ String get_input(String mensaje);
  * tokenize: String -> TokenList
  * Tokeniza cada parte del string en una lista de tokens, para después ser procesado
  */
-TokenList tokenize(String tokens);
-
-/**
- * str_dup: String -> String
- * Asigna el espacio necesario para duplicar un string a otro
- */
-String str_dup(const String s);
+TokenNodo* tokenize(String tokens);
 
 #endif /* __TOKENIZER__ */

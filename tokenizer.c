@@ -7,24 +7,41 @@
 #include <ctype.h>
 #include <stdbool.h>
 
-static const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+/**
+ * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
+ * lista, por practicidad al añadir tokens
+ */
 
-static const String comandos[] = {"deff", "defl", "apply", "search"};
+struct _TokenList {
+  TokenNodo *head;
+  TokenNodo *tail;
+};
+
+typedef struct _TokenList *TokenList;
 
 /* ------ Funciones Auxiliares ------ */
 
 /**
- * es_primitiva: String -> bool
- * Retorna true si el string dado es una función primitiva. Si no lo es, retorna falso
+ * es_comando_válido: String -> bool
+ * Retorna true si el token dado es válido como comando, y false sino
  */
-bool es_primitiva(String funcion) {
-
-  for (int i = 0; i < 6; i++) {
-    if (strcmp(funcion, primitivas[i]) == 0) {
-      return true;
-    }
+bool es_comando_valido(String token) {
+  int tam = sizeof(comandos) / sizeof(comandos[0]);
+  for (int i = 0; i < tam; i++) {
+    if (strcmp(token, comandos[i]) == 0) return true;
   }
+  return false;
+}
 
+/**
+ * es_primitiva: String -> bool
+ * Retorna true si el string dado es un tipo de función primitiva, y false si no lo es
+ */
+bool es_primitiva(String token) {
+  int cantPrimitivas = sizeof(primitivas) / sizeof(primitivas[0]);
+  for (int i = 0; i < cantPrimitivas; i++) {
+    if (strcmp(token, primitivas[i]) == 0) return true;
+  }
   return false;
 }
 
@@ -53,11 +70,6 @@ bool es_def_valida(String def) {
   // Si dentro del string hay elementos no válidos, no es def válida
   for (int i = 1; i < (int)strlen(def); i++) {
     if(!(isalnum(def[i]) || def[i] == '_')) return false;
-  }
-
-  const int tamano = sizeof(comandos) / sizeof(comandos[0]);
-  for (int j = 0; j < tamano; j++) {
-    if (strcmp(def, comandos[j]) == 0) return false;
   }
 
   return true;
@@ -117,21 +129,9 @@ TipoDeToken tipo_token(String token) {
   // Sino, verifico si es un tipo de palabra válida
   
   else {
-    if (strcmp(token, "deff") == 0) {
-      tipo = TOKEN_DEFF;
+    if(es_comando_valido(token)) {
+      tipo = comando(token);
     }
-    else if (strcmp(token, "defl") == 0) {
-      tipo = TOKEN_DEFL;
-    }
-    else if (strcmp(token, "apply") == 0) {
-      tipo = TOKEN_APPLY;
-    }
-    else if (strcmp(token, "search") == 0) {
-      tipo = TOKEN_SEARCH;
-    }
-    else if (strcmp(token, "quit") == 0) {
-      tipo = TOKEN_QUIT;
-    } 
     else if (es_primitiva(token)) {
       tipo = TOKEN_PRIMITIVA;
     }
@@ -153,7 +153,6 @@ TipoDeToken tipo_token(String token) {
  * str_dup: String -> String (Función auxiliar)
  * Asigna el espacio necesario para duplicar un string a otro
  */
-
 String str_dup(const String s) {
     size_t size = strlen(s) + 1;
     String p = malloc(size);
@@ -217,7 +216,6 @@ String string_a_token (String cadena, String delimitador) {
   static int pos;
 
   // Si la cadena dada no es NULL, asignar retorno a cadena
-
   if (cadena) {
     retorno = cadena;
     pos = 0;
@@ -226,17 +224,14 @@ String string_a_token (String cadena, String delimitador) {
   if (retorno == NULL) return NULL;
 
   // Saltar delimitadores
-
   while (retorno[pos] && strchr(delimitador, retorno[pos])) pos++;
 
   // Si llego al final del string, retornar NULL
-
   if (retorno[pos] == '\0') return NULL;
 
   int start = pos;
 
   // Si se llega a un símbolo, guardarlo y retornarlo
-
   if (ispunct(retorno[pos])) {
     String simbolo = malloc(sizeof(char) * 2);
     assert(simbolo);
@@ -247,7 +242,6 @@ String string_a_token (String cadena, String delimitador) {
   }
 
   // Sino, recorrer la palabra y guardarla en un string nuevo
-
   while ((retorno[pos] && isalnum(retorno[pos])) || retorno[pos] == '_') pos++;
 
   int largo = pos - start;
@@ -339,7 +333,7 @@ String get_input(String message) {
  * tokenize: String -> tokenList
  * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
  */
-TokenList tokenize(String tokens) {
+TokenNodo* tokenize(String tokens) {
 
   // Primero, si el string está vacío, no hacer nada
 
@@ -352,6 +346,8 @@ TokenList tokenize(String tokens) {
   // Se busca el primer token
   String token = string_a_token(tokens, " ");
   TipoDeToken tipo = tipo_token(token);
+
+  // Luego, se va añadiendo y buscando cada token para guardarlo
   while (token) {
     list = anadir_token(list, token, tipo);
     free(token);
@@ -359,7 +355,10 @@ TokenList tokenize(String tokens) {
     tipo = tipo_token(token);
   }
 
-  list = anadir_token(list, "", TOKEN_EOF);
+  // Si todo sale bien, se retorna la lista sin la estructura y se libera la estructura
+  TokenNodo* retorno = list->head;
+  list->head = list->tail = NULL;
+  free(list);
 
-  return list;
+  return retorno;
 }

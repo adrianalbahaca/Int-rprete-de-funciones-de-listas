@@ -37,15 +37,15 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [x] Crear una función que tokenize cada comando que escriba el usuario
  <!-- Funciones que no puede declarar el usuario -->
  - [ ] Optimizar la estructura que guarda la lista de tokens para ahorrar memoria
-
- - [x] Definir la estructura del AST, de acuerdo a la gramática simplificada
+ <!-- Puede ser que no necesite darle la estructura que apunta al princio y final de la lista -->
+ - [ ] Definir la estructura del AST, de acuerdo a la gramática simplificada
  <!-- Tomar en cuenta los nodos que ya no nos sirven -->
  - [x] Implementar un parser recursivo descendiente 
  <!-- Debe armar el AST a medida de que se ejecuta -->
  - [x] Definir cómo se van a guardar las funciones y las listas
  <!-- Se tienen que usar tablas hash con listas SE -->
- - [ ] Implementar el guardado de las funciones y las listas ("deff", "defl")
-
+ - [ ] Implementar los comandos de guardado de las funciones y las listas ("deff", "defl")
+ <!-- Implementación de las tablas hash -->
  - [ ] Implementar cómo se aplica las funciones en las listas ("apply") 
  <!-- Esto debe ser bastante sencillo -->
  - [ ] Implementar el algoritmo de búsqueda entre funciones

@@ -7,18 +7,16 @@ Sentencia ::= Deff PUNTO_COMA | Defl PUNTO_COMA | Apply PUNTO_COMA | Search PUNT
 ```
 Deff ::= "deff" DEF IGUAL Funcs | "deff" DEF IGUAL Rep
 Rep ::= Funcs "<" Funcs ">" Funcs
-Funcs ::= Func Funcs | Func
-Func ::= DEF | PRIMITIVA
+Funcs ::= DEF Funcs | PRIMITIVA Funcs | DEF | PRIMITIVA
 ```
 ## Definición de listas
 ```
-Defl ::= "defl" DEF IGUAL ListaSinDef
-ListaSinDef ::= COR_ABRE Elementos COR_CIERRA
+Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
 Elementos ::= DIGITO COMA Elementos | DIGITO | e
 ```
 ## Definición de aplicación
 ```
-Apply ::= "apply" FUNC DEF | "apply" FUNC LISTA
+Apply ::= "apply" DEF DEF | "apply" PRIMITIVA DEF | "apply" DEF LISTA | "apply" PRIMITIVA LISTA
 ```
 ## Definición de búsqueda
 ```
