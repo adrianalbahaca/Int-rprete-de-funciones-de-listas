@@ -29,14 +29,14 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
 
 # Cosas a hacer:
  - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta
-
- - [ ] Simplificar la gramática creada, sacando terminales y no terminales innecesarios
+ <!-- Es una gramática libre de contexto. Visto en LFyC (El cual tengo que estudiar para el final) -->
+ - [x] Simplificar la gramática creada, sacando terminales y no terminales innecesarios
  <!-- Leer libros sobre el tema mientras estudias LFyC -->
  - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
  <!-- Razonamiento de la función get_string() de CS50 con varios cambios -->
  - [x] Crear una función que tokenize cada comando que escriba el usuario
  <!-- Funciones que no puede declarar el usuario -->
- - [ ] Optimizar la estructura que guarda la lista de tokens para ahorrar memoria
+ - [x] Optimizar la estructura que guarda la lista de tokens para ahorrar memoria
  <!-- Puede ser que no necesite darle la estructura que apunta al princio y final de la lista -->
  - [ ] Definir la estructura del AST, de acuerdo a la gramática simplificada
  <!-- Tomar en cuenta los nodos que ya no nos sirven -->
