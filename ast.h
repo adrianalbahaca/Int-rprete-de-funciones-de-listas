@@ -44,7 +44,7 @@ typedef ASTNodo* ASTTree;
  * parse: TokenList -> ASTTree
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
-ASTTree parse(TokenList tokens); // Sentencia ::= Definicion ';' | Aplicacion  ';' | Busqueda ';'
+ASTTree parse(TokenNodo* tokens); // Sentencia ::= Definicion ';' | Aplicacion  ';' | Busqueda ';'
 
 /**
  * 

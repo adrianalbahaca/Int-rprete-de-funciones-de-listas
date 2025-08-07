@@ -8,18 +8,74 @@
 #include <stdbool.h>
 
 /**
- * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
- * lista, por practicidad al añadir tokens
+ * Se guarda en arreglos los comandos que permite este parser y las funciones
+ * primitivas a usar
  */
 
-struct _TokenList {
+const String comandos[] = {"deff", "defl", "apply", "search", "quit"};
+const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
+
+/**
+ * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
+ * lista, por practicidad al añadir tokens. Esta estructura es temporal para el proceso de
+ * tokenización
+ */
+
+typedef struct __TokenList {
   TokenNodo *head;
   TokenNodo *tail;
-};
+} _TokenList;
 
-typedef struct _TokenList *TokenList;
+typedef _TokenList *TokenList;
 
 /* ------ Funciones Auxiliares ------ */
+
+/**
+ * es_simbolo: String -> bool
+ * Retorna true si es un símbolo, y false si no lo es
+ */
+bool es_simbolo(String token) {
+  return (strlen(token) == 1 && ispunct(token[0]));
+}
+
+/**
+ * tipo_simbolo: String -> TipoDeToken
+ * Retorna el tipo de token acorde al tipo de símbolo que es. Si no es ningún símbolo válido
+ * retorna el TOKEN_ERROR
+ */
+TipoDeToken tipo_simbolo(String token) {
+   switch(token[0]) {
+      case '{':
+        return TOKEN_LLAVE_ABRE;
+
+      case '}':
+        return TOKEN_LLAVE_CIERRA;
+
+      case '[':
+        return TOKEN_COR_ABRE;
+
+      case ']':
+        return TOKEN_COR_CIERRA;
+
+      case ';':
+        return TOKEN_PUNTO_COMA;
+
+      case ',':
+        return TOKEN_COMA;
+
+      case '=':
+        return TOKEN_IGUAL;
+
+      case '<':
+        return TOKEN_ANG_ABRE;
+
+      case '>':
+        return TOKEN_ANG_CIERRA;
+
+      default:
+        return TOKEN_ERROR;
+    }
+}
 
 /**
  * es_comando_válido: String -> bool
@@ -31,6 +87,21 @@ bool es_comando_valido(String token) {
     if (strcmp(token, comandos[i]) == 0) return true;
   }
   return false;
+}
+
+/**
+ * tipo_comando: String -> TipoDeToken
+ * Retorna el tipo de token acorde al tipo de comando dado. Si no es ningún comando válido
+ * retorna el TOKEN_ERROR
+ */
+TipoDeToken tipo_comando(String token) {
+  int cantComandos = sizeof(comandos) / sizeof(comandos[0]);
+  for (int i = 0; i < cantComandos; i++) {
+    if (strcmp(token, comandos[i]) == 0) {
+      return (TipoDeToken)i;
+    }
+  }
+  return TOKEN_ERROR;
 }
 
 /**
@@ -82,52 +153,16 @@ bool es_def_valida(String def) {
  */
 TipoDeToken tipo_token(String token) {
 
-  TipoDeToken tipo = TOKEN_EOF;
+  TipoDeToken tipo;
 
-  /**
-   * TODO: Optimizar el chequeo del tipo de token
-   */
+  if (token == NULL) return TOKEN_EOF;
 
-  if (strlen(token) == 1 && ispunct(token[0])) {
-    switch(token[0]) {
-      case '{':
-        tipo = TOKEN_LLAVE_ABRE;
-        break;
-      case '}':
-        tipo = TOKEN_LLAVE_CIERRA;
-        break;
-      case '[':
-        tipo = TOKEN_COR_ABRE;
-        break;
-      case ']':
-        tipo = TOKEN_COR_CIERRA;
-        break;
-      case ';':
-        tipo = TOKEN_PUNTO_COMA;
-        break;
-      case ',':
-        tipo = TOKEN_COMA;
-        break;
-      case '=':
-        tipo = TOKEN_IGUAL;
-        break;
-      case '<':
-        tipo = TOKEN_ANG_ABRE;
-        break;
-      case '>':
-        tipo = TOKEN_ANG_CIERRA;
-        break;
-      default:
-        tipo = TOKEN_ERROR;
-        break;
-    }
+  if (es_simbolo(token)) {
+   tipo = tipo_simbolo(token);
   }
-
-  // Sino, verifico si es un tipo de palabra válida
-  
   else {
-    if(es_comando_valido(token)) { /** TODO: Corregir esta sección para que sea óptimo */
-      tipo = comando(token);
+    if(es_comando_valido(token)) {
+      tipo = tipo_comando(token);
     }
     else if (es_primitiva(token)) {
       tipo = TOKEN_PRIMITIVA;
@@ -147,8 +182,10 @@ TipoDeToken tipo_token(String token) {
 }
 
 /**
- * str_dup: String -> String (Función auxiliar)
- * Asigna el espacio necesario para duplicar un string a otro
+ * str_dup: String -> String
+ * Asigna el espacio necesario para duplicar un string a otro.
+ * Básicamente, hace lo mismo que strdup(), pero como no está en el estándar C99
+ * aparentemente, me toca escribir la función
  */
 String str_dup(const String s) {
     size_t size = strlen(s) + 1;
@@ -161,12 +198,12 @@ String str_dup(const String s) {
 }
 
 /**
- * crear_lista: void -> TokenList (Función auxiliar)
+ * crear_lista: void -> TokenList
  * Crea una lista simplemente enlazada de tokens vacía
  */
 TokenList crear_lista() {
 
-  TokenList list = malloc(sizeof(struct _TokenList));
+  TokenList list = malloc(sizeof(_TokenList));
   assert(list);
   list->head = list->tail = NULL;
   
@@ -174,13 +211,12 @@ TokenList crear_lista() {
 }
 
 /**
- * anadir_token: TokenList String -> TokenList (Función auxiliar)
+ * anadir_token: TokenList String -> TokenList
  * Añade el token dado al final de la lista de tokens
  */
 TokenList anadir_token(TokenList l, String token, TipoDeToken tipo) {
 
   // Crear nodo y copiar el token allí
-
   TokenNodo *nodo = malloc(sizeof(TokenNodo));
   assert(nodo);
   nodo->token = str_dup(token);
@@ -192,7 +228,7 @@ TokenList anadir_token(TokenList l, String token, TipoDeToken tipo) {
     nodo->ant = NULL;
     l->head = l->tail = nodo;
   }
-  else {
+  else { // Caso 2: Lista con elementos
     l->tail->sig = nodo;
     nodo->ant = l->tail;
     l->tail = nodo;
@@ -218,6 +254,7 @@ String string_a_token (String cadena, String delimitador) {
     pos = 0;
   }
 
+  // Si ya no queda más elementos por tokenizar, retornar NULL
   if (retorno == NULL) return NULL;
 
   // Saltar delimitadores
@@ -261,11 +298,9 @@ String string_a_token (String cadena, String delimitador) {
 String get_input(String message) {
 
   // Mostrar el mensaje al usuario
-
   printf("%s", message);
 
   // Inicialización de variables
-
   String buffer = NULL; // Guardado temporal de la entrada del usuario
   size_t capacity = 0, size = 0;  // Capacidad del buffer y tamaño real
   int c;  // Caracter leído
@@ -275,22 +310,18 @@ String get_input(String message) {
     // Hacer crecer el buffer si es necesario
     if ((size + 1) > capacity) {
 
-      /* Si la capacidad no sobrepasa el limite de tamaño, aumentarlo */
+      // Si la capacidad no sobrepasa el tamaño máximo que permite la computadora, aumentarlo
+      if (capacity < SIZE_MAX) capacity++;
 
-      if (capacity < SIZE_MAX)
-        capacity++;
-      else {                    // Sino, abortar y no retornar nada
+      // Sino, liberar buffer y retornar NULL para indicar un error
+      else {
         free(buffer);
         return NULL;
       }
 
       // Extender el buffer
-
       String temp = realloc(buffer, capacity * (sizeof(char)));
-      if (temp == NULL) {
-        free(buffer);
-        return NULL;
-      }
+      assert(temp != NULL);
       buffer = temp;
     }
     // Meter el caracter en el buffer
@@ -320,10 +351,9 @@ String get_input(String message) {
   // Terminar string
   s[size] = '\0';
 
+  // Liberar el buffer y retornar
   free(buffer);
-
   return s;
-
 }
 
 /**
@@ -333,11 +363,9 @@ String get_input(String message) {
 TokenNodo* tokenize(String tokens) {
 
   // Primero, si el string está vacío, no hacer nada
-
-  assert(tokens);
+  if (tokens == NULL) return NULL;
 
   // Sino, se crea la lista
-
   TokenList list = crear_lista();
 
   // Se busca el primer token
