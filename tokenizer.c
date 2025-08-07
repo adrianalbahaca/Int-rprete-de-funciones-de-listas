@@ -82,14 +82,11 @@ bool es_def_valida(String def) {
  */
 TipoDeToken tipo_token(String token) {
 
-  TipoDeToken tipo;
+  TipoDeToken tipo = TOKEN_EOF;
 
-  // Primero, verifico si el token no es nulo
-
-  if (token == NULL) {
-    tipo = TOKEN_EOF;
-    return tipo;
-  }
+  /**
+   * TODO: Optimizar el chequeo del tipo de token
+   */
 
   if (strlen(token) == 1 && ispunct(token[0])) {
     switch(token[0]) {
@@ -129,7 +126,7 @@ TipoDeToken tipo_token(String token) {
   // Sino, verifico si es un tipo de palabra válida
   
   else {
-    if(es_comando_valido(token)) {
+    if(es_comando_valido(token)) { /** TODO: Corregir esta sección para que sea óptimo */
       tipo = comando(token);
     }
     else if (es_primitiva(token)) {
