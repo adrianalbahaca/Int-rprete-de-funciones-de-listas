@@ -4,7 +4,7 @@
 #include "tokenizer.h"
 #include <stdio.h>
 
-// Se guarda de forma global la siguiente de tokens
+// Se guarda de forma global una lista siguiente de tokens
 static TokenNodo* siguiente;
 
 /* ------ Funciones auxiliares ------ */
@@ -538,43 +538,36 @@ ASTTree parse(TokenList tokens) {
     switch (siguiente->tipo) {
         case TOKEN_DEFF:
 
-            hijo = Deff();
-            if(hijo == NULL) break;
-            if(!match(TOKEN_PUNTO_COMA)) break;
-            tree = crear_nodo(AST_SENTENCIA, NULL);
-            agregar_hijo(tree, hijo);
+            tree = Deff();
+            if(tree == NULL) break;
+            if(!match(TOKEN_PUNTO_COMA)) liberar_arbol(tree);
             break;
 
         case TOKEN_DEFL:
 
-            hijo = Defl();
-            if(hijo == NULL) break;
-            if(!match(TOKEN_PUNTO_COMA)) break;
-            tree = crear_nodo(AST_SENTENCIA, NULL);
-            agregar_hijo(tree, hijo);
+            tree = Defl();
+            if(tree == NULL) break;
+            if(!match(TOKEN_PUNTO_COMA)) liberar_arbol(tree);
             break;
 
         case TOKEN_APPLY:
 
-            hijo = Apply();
-            if (hijo == NULL) break;
-            if(!match(TOKEN_PUNTO_COMA)) break;
-            tree = crear_nodo(AST_SENTENCIA, NULL);
-            agregar_hijo(tree, hijo);
+            tree = Apply();
+            if (tree == NULL) break;
+            if(!match(TOKEN_PUNTO_COMA)) liberar_arbol(tree);
             break;
 
         case TOKEN_SEARCH:
 
-            hijo = Search();
-            if (hijo == NULL) break;
-            if(!match(TOKEN_PUNTO_COMA)) break;
-            tree = crear_nodo(AST_SENTENCIA, NULL);
-            agregar_hijo(tree, hijo);
+            tree = Search();
+            if (tree == NULL) break;
+            if(!match(TOKEN_PUNTO_COMA)) liberar_arbol(tree);
             break;
 
         case TOKEN_QUIT:
 
             tree = Quit();
+            if(!match(TOKEN_PUNTO_COMA)) liberar_arbol(tree);
             break;
 
         default:

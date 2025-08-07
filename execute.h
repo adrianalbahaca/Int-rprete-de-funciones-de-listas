@@ -60,4 +60,11 @@ typedef struct _TablaHash {
 
 typedef struct _TablaHash* TablaHash;
 
+/**
+ * execute: ASTTree TablaHash TablaHash -> void
+ * Ejecuta los comandos descritos en el AST, haciendo los cambios en cada tabla
+ * hash correspondiente
+ */
+void execute(ASTTree tree, TablaHash tablaFunciones, TablaHash tablaListas);
+
 #endif // __EXECUTE__

@@ -8,7 +8,7 @@
 
 typedef enum {
     /* Estos son los tipos de nodo raíz */
-    AST_SENTENCIA, AST_DEFF, AST_DEFL, AST_APPLY, AST_SEARCH, AST_QUIT,
+    AST_DEFF, AST_DEFL, AST_APPLY, AST_SEARCH, AST_QUIT,
 
     /* Estos son tipos de nodo internos */
     AST_FUNCS, AST_FUNC, AST_REP, AST_LISTAS, AST_LISTA, AST_ELEMENTOS,

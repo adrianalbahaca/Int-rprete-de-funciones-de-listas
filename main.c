@@ -9,8 +9,6 @@ int main(void) {
     printf("Trabajo final: Parser de funciones de listas. Adrian Albahaca | A-4708/2");
 
     // Se usa un booleano para indicar cuándo se sale del shell
-    TablaDeFunciones tablaF = inicializar_tabla_func();
-    TablaDeListas tablaL = inicializar_tabla_listas();
     bool quit = true;
     
     while(quit) {
@@ -18,22 +16,14 @@ int main(void) {
         String command = getInput("==> ");
         assert(command != NULL);
 
-        /**
-         * TODO: Crear una función que recibe el input y tokeniza cada elemento, agarrando
-         * cada error que se pueda formar, retornando una lista de tokens
-         */
         TokenList tokens = tokenize(command);
 
-        /**
-         * TODO: Crear una función que recibe la lista de tokens y lo convierte en un
-         * Árbol Abstracto de Sintaxis (AAS)
-         */
         ASTTree ast = parse(tokens);
 
         /**
          * TODO: Crear una función que recibe el AAS y ejecuta cada instrucción de cada nodo
          */
-        execute(ast, tablaF, tablaL);
+        execute(ast);
     }
     return 0;
 }
