@@ -1,12 +1,6 @@
 #ifndef __TOKENIZER__
 #define __TOKENIZER__
-
-/**
- * Por conveniencia, se declara char* como string
- */
-
-typedef char* String;
-
+#include "string-auxiliar.h"
 /**
  * Se declara la lista de tipos de tokens que puede tener cada token
  */
@@ -35,13 +29,6 @@ typedef struct _TokenNodo {
   struct _TokenNodo *sig;
   struct _TokenNodo *ant;
 } TokenNodo;
-
-/**
- * str_dup: String -> String
- * Asigna el espacio necesario para duplicar un string a otro
- * (Como strdup no está en el estándar C99, me tocó escribir la función)
- */
-String str_dup(const String s);
 
 /**
  * getInput: String -> String

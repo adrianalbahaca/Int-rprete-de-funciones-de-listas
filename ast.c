@@ -13,14 +13,13 @@ static TokenNodo* siguiente;
  * destruir_lista: TokenList -> void
  * Destruye una lista de tokens
  */
-void destruir_lista(TokenList lista) {
-    for(TokenNodo *n = lista->head, *next = lista->head->sig; n != NULL; n = next) {
+void destruir_lista(TokenNodo* lista) {
+    for(TokenNodo *n = lista, *next = lista->sig; n != NULL; n = next) {
         free(n->token);
         next = n->sig;
         free(n);
     }
-    lista->head = lista->tail = NULL;
-    free(lista);
+    return;
 }
 /**
  * error: ASTTree -> bool
@@ -73,14 +72,6 @@ bool match(TipoDeToken tipo) {
     }
 }
 
-/**
- * back: void -> void;
- * Retrocede un nodo atrás de la lista
- */
-void back() {
-    siguiente = siguiente->ant;
-    return;
-}
 
 void liberar_arbol(ASTNodo* arbol) {
     if (arbol == NULL) return;
@@ -161,8 +152,8 @@ ASTNodo* Primitiva(String primitiva) {
  * Func: void -> ASTNodo*
  * Crea una función de tipo DEF o tipo PRIMITIVA. Si el token no es de esos tipos,
  * retorna NULL
- * Sigue la siguiente regla gramatical:
- * => Func ::= DEF | PRIMITIVA
+ * TODO: Cambiar este nodo para que no cree un nodo Func, sino un DEF o PRIMITIVA
+ * directamente
  */
 ASTNodo* Func() {
     ASTNodo* func = crear_nodo(AST_FUNC, NULL);
@@ -519,13 +510,13 @@ ASTNodo* Deff() {
 /* -------------------------------------------- */
 
 /**
- * parse: TokenList -> ASTTree
+ * parse: TokenNodo* -> ASTTree
  * Toma una siguiente de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
-ASTTree parse(TokenList tokens) {
+ASTTree parse(TokenNodo* tokens) {
 
     /* Primero, voy a inicializar la siguiente en la función next */
-    next(tokens->head);
+    next(tokens);
     
     ASTTree tree = NULL;
 
@@ -574,10 +565,10 @@ ASTTree parse(TokenList tokens) {
             break;
     }
 
-    // Si todo sale bien, borrar la lista de tokens
     siguiente = NULL;
     destruir_lista(tokens);
 
+    // Detectar si hay un error en el parsing
     if (tree == NULL) {
         printf("Hubo un error en el parsing. Intente de nuevo\n");
     }

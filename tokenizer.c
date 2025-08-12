@@ -1,4 +1,5 @@
 #include "tokenizer.h"
+#include "string-auxiliar.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -6,14 +7,6 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <stdbool.h>
-
-/**
- * Se guarda en arreglos los comandos que permite este parser y las funciones
- * primitivas a usar
- */
-
-const String comandos[] = {"deff", "defl", "apply", "search", "quit"};
-const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
 
 /**
  * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
@@ -82,8 +75,7 @@ TipoDeToken tipo_simbolo(String token) {
  * Retorna true si el token dado es válido como comando, y false sino
  */
 bool es_comando_valido(String token) {
-  int tam = sizeof(comandos) / sizeof(comandos[0]);
-  for (int i = 0; i < tam; i++) {
+  for (int i = 0; i < comandos_tam; i++) {
     if (strcmp(token, comandos[i]) == 0) return true;
   }
   return false;
@@ -95,8 +87,7 @@ bool es_comando_valido(String token) {
  * retorna el TOKEN_ERROR
  */
 TipoDeToken tipo_comando(String token) {
-  int cantComandos = sizeof(comandos) / sizeof(comandos[0]);
-  for (int i = 0; i < cantComandos; i++) {
+  for (int i = 0; i < comandos_tam; i++) {
     if (strcmp(token, comandos[i]) == 0) {
       return (TipoDeToken)i;
     }
@@ -109,8 +100,7 @@ TipoDeToken tipo_comando(String token) {
  * Retorna true si el string dado es un tipo de función primitiva, y false si no lo es
  */
 bool es_primitiva(String token) {
-  int cantPrimitivas = sizeof(primitivas) / sizeof(primitivas[0]);
-  for (int i = 0; i < cantPrimitivas; i++) {
+  for (int i = 0; i < primitivas_tam; i++) {
     if (strcmp(token, primitivas[i]) == 0) return true;
   }
   return false;
@@ -179,22 +169,6 @@ TipoDeToken tipo_token(String token) {
   }
 
   return tipo;
-}
-
-/**
- * str_dup: String -> String
- * Asigna el espacio necesario para duplicar un string a otro.
- * Básicamente, hace lo mismo que strdup(), pero como no está en el estándar C99
- * aparentemente, me toca escribir la función
- */
-String str_dup(const String s) {
-    size_t size = strlen(s) + 1;
-    String p = malloc(size);
-    assert(p);
-    if (p) {
-        memcpy(p, s, size);
-    }
-    return p;
 }
 
 /**
@@ -302,16 +276,16 @@ String get_input(String message) {
 
   // Inicialización de variables
   String buffer = NULL; // Guardado temporal de la entrada del usuario
-  size_t capacity = 0, size = 0;  // Capacidad del buffer y tamaño real
+  size_t capacidad = 0, tam = 0;  // Capacidad del buffer y tamaño real
   int c;  // Caracter leído
 
   while ((c = fgetc(stdin)) != '\n' && c != EOF) {
 
     // Hacer crecer el buffer si es necesario
-    if ((size + 1) > capacity) {
+    if ((tam + 1) > capacidad) {
 
       // Si la capacidad no sobrepasa el tamaño máximo que permite la computadora, aumentarlo
-      if (capacity < SIZE_MAX) capacity++;
+      if (capacidad < SIZE_MAX) capacidad++;
 
       // Sino, liberar buffer y retornar NULL para indicar un error
       else {
@@ -320,25 +294,25 @@ String get_input(String message) {
       }
 
       // Extender el buffer
-      String temp = realloc(buffer, capacity * (sizeof(char)));
+      String temp = realloc(buffer, capacidad * (sizeof(char)));
       assert(temp != NULL);
       buffer = temp;
     }
     // Meter el caracter en el buffer
 
-    buffer[size++] = c;
+    buffer[tam++] = c;
   }
 
   // Si el usuario no dió ninguna entrada, abortar y retornar NULL
 
-  if (size == 0 && c == EOF) {
+  if (tam == 0 && c == EOF) {
     free(buffer);
     return NULL;
   }
 
   // Minimizar el buffer
 
-  String s = malloc((size + 1) * (sizeof(char)));
+  String s = malloc((tam + 1) * (sizeof(char)));
   if (s == NULL) {
     free(buffer);
     return NULL;
@@ -346,10 +320,10 @@ String get_input(String message) {
 
   // Copiar lo que contiene el buffer en s con el tamaño real del string
 
-  strncpy(s, buffer, size);
+  strncpy(s, buffer, tam);
 
   // Terminar string
-  s[size] = '\0';
+  s[tam] = '\0';
 
   // Liberar el buffer y retornar
   free(buffer);
