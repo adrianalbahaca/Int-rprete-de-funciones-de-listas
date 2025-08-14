@@ -1,6 +1,6 @@
 #include "ast.h"
-#include "tokenizer.h"
-#include "string-auxiliar.h"
+#include "tokens.h"
+#include "estructuras/string-auxiliar.h"
 #include <stdlib.h>
 #include <assert.h>
 #include <stdio.h>

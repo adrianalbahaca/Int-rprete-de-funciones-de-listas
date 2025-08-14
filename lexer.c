@@ -1,4 +1,4 @@
-#include "tokenizer.h"
+#include "lexer.h"
 #include "string-auxiliar.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -7,19 +7,6 @@
 #include <stdint.h>
 #include <ctype.h>
 #include <stdbool.h>
-
-/**
- * Se declara la lista de tokens en este archivo con una estructura que apunta al principio y fin de la
- * lista, por practicidad al añadir tokens. Esta estructura es temporal para el proceso de
- * tokenización
- */
-
-typedef struct __TokenList {
-  TokenNodo *head;
-  TokenNodo *tail;
-} _TokenList;
-
-typedef _TokenList *TokenList;
 
 /* ------ Funciones Auxiliares ------ */
 
@@ -38,35 +25,25 @@ bool es_simbolo(String token) {
  */
 TipoDeToken tipo_simbolo(String token) {
    switch(token[0]) {
-      case '{':
-        return TOKEN_LLAVE_ABRE;
+      case '{': return TOKEN_LLAVE_ABRE;
 
-      case '}':
-        return TOKEN_LLAVE_CIERRA;
+      case '}': return TOKEN_LLAVE_CIERRA;
 
-      case '[':
-        return TOKEN_COR_ABRE;
+      case '[': return TOKEN_COR_ABRE;
 
-      case ']':
-        return TOKEN_COR_CIERRA;
+      case ']': return TOKEN_COR_CIERRA;
 
-      case ';':
-        return TOKEN_PUNTO_COMA;
+      case ';': return TOKEN_PUNTO_COMA;
 
-      case ',':
-        return TOKEN_COMA;
+      case ',': return TOKEN_COMA;
 
-      case '=':
-        return TOKEN_IGUAL;
+      case '=': return TOKEN_IGUAL;
 
-      case '<':
-        return TOKEN_ANG_ABRE;
+      case '<': return TOKEN_ANG_ABRE;
 
-      case '>':
-        return TOKEN_ANG_CIERRA;
+      case '>': return TOKEN_ANG_CIERRA;
 
-      default:
-        return TOKEN_ERROR;
+      default: return TOKEN_ERROR;
     }
 }
 
@@ -85,9 +62,6 @@ bool es_comando_valido(String token) {
  * tipo_comando: String -> TipoDeToken
  * Retorna el tipo de token acorde al tipo de comando dado. Si no es ningún comando válido
  * retorna el TOKEN_ERROR
- */
-/**
- * TODO: Ver cómo corregir esta función para que no importe dónde esté los tokens en el enum
  */
 TipoDeToken tipo_comando(String token) {
   for (int i = 0; i < comandos_tam; i++) {
@@ -172,98 +146,6 @@ TipoDeToken tipo_token(String token) {
   return tipo;
 }
 
-/**
- * crear_lista: void -> TokenList
- * Crea una lista simplemente enlazada de tokens vacía
- */
-TokenList crear_lista() {
-
-  TokenList list = malloc(sizeof(_TokenList));
-  assert(list);
-  list->head = list->tail = NULL;
-  
-  return list;
-}
-
-/**
- * anadir_token: TokenList String -> TokenList
- * Añade el token dado al final de la lista de tokens
- */
-TokenList anadir_token(TokenList l, String token, TipoDeToken tipo) {
-
-  // Crear nodo y copiar el token allí
-  TokenNodo *nodo = malloc(sizeof(TokenNodo));
-  assert(nodo);
-  nodo->token = str_dup(token);
-  nodo->tipo = tipo;
-  nodo->sig = NULL;
-
-  // Caso 1: Lista vacía
-  if (l->head == NULL && l->tail == NULL) {
-    nodo->ant = NULL;
-    l->head = l->tail = nodo;
-  }
-  else { // Caso 2: Lista con elementos
-    l->tail->sig = nodo;
-    nodo->ant = l->tail;
-    l->tail = nodo;
-  }
-
-  return l;
-
-}
-
-/**
- * string_a_token: String -> String
- * Retorna cada token de la cadena, como los símbolos, identificadores, números, etc
- * Es como strtok, pero personalizado para lo que necesito
- */
-String string_a_token (String cadena, String delimitador) {
-
-  static String retorno;
-  static int pos;
-
-  // Si la cadena dada no es NULL, asignar retorno a cadena
-  if (cadena) {
-    retorno = cadena;
-    pos = 0;
-  }
-
-  // Si ya no queda más elementos por tokenizar, retornar NULL
-  if (retorno == NULL) return NULL;
-
-  // Saltar delimitadores
-  while (retorno[pos] && strchr(delimitador, retorno[pos])) pos++;
-
-  // Si llego al final del string, retornar NULL
-  if (retorno[pos] == '\0') return NULL;
-
-  int start = pos;
-
-  // Si se llega a un símbolo, guardarlo y retornarlo
-  if (ispunct(retorno[pos])) {
-    String simbolo = malloc(sizeof(char) * 2);
-    assert(simbolo);
-    simbolo[0] = retorno[pos];
-    simbolo[1] = '\0';
-    pos++;
-    return simbolo;
-  }
-
-  // Sino, recorrer la palabra y guardarla en un string nuevo
-  while ((retorno[pos] && isalnum(retorno[pos])) || retorno[pos] == '_') pos++;
-
-  int largo = pos - start;
-
-  String token = malloc((largo + 1));
-  assert(token);
-  strncpy(token, retorno + start, largo);
-  token[largo] = '\0';
-
-  return token;
-
-}
-
 /* ---------------------------------- */
 
 /**
@@ -335,7 +217,7 @@ String get_input(String message) {
  * tokenize: String -> tokenList
  * Toma un string y tokeniza cada palabra en una lista simplemente enlazada de tokens
  */
-TokenNodo* tokenize(String tokens) {
+TokenList tokenize(String tokens) {
 
   // Primero, si el string está vacío, no hacer nada
   if (tokens == NULL) return NULL;
@@ -355,10 +237,5 @@ TokenNodo* tokenize(String tokens) {
     tipo = tipo_token(token);
   }
 
-  // Si todo sale bien, se retorna la lista sin la estructura y se libera la estructura
-  TokenNodo* retorno = list->head;
-  list->head = list->tail = NULL;
-  free(list);
-
-  return retorno;
+  return list;
 }

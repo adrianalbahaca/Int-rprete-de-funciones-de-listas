@@ -24,5 +24,12 @@ extern const int comandos_tam;
  */
 String str_dup(const String s);
 
+/**
+ * string_a_token: String -> String
+ * Retorna cada token de la cadena, como los símbolos, identificadores, números, etc
+ * Es como strtok, pero personalizado para lo que necesito
+ */
+String string_a_token (String cadena, String delimitador);
+
 
 #endif // __STRING_AUXILIAR__
