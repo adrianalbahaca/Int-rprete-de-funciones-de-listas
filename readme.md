@@ -41,6 +41,6 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [ ] Terminar los archivos `lexer.c` y `lexer.h`, que tokeniza la entrada del usuario
  - [ ] Terminar los archivos `ast.c` y `ast.h` que guarda la estructura del AST, con sus funciones para manejarlo, añadirle hijos y eliminarlo
  - [ ] Terminar los archivos `parser.c` y `parser.h`, el parser recursivo descendente, que arma poco a poco el AST acorde a la gramática libre de contexto, y verifica si hay errores. La forma de lidiar con errores es borrando todo el AST y pidiendo el comando de nuevo
- - [ ] Terminar los archivos `tablas.c` y `tablas.h`, que guarda las estructuras de las tablas hash para guardar las funciones y las listas
+ - [ ] Terminar los archivos `tablas.c` y `tablas.h`, que guarda las estructuras de las tablas hash para guardar las funciones y las listas, que son listas simplemente enlazadas
  - [ ] Terminar los archivos `execute.h` y `execute.c` que implementa los comandos usando los parámetros, de acuerdo al AST dado
  - [ ] Crear una función `main.c` donde se ejecuta todo este parser, y formatear todo de acuerdo a lo pedido

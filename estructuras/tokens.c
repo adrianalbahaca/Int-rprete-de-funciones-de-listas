@@ -25,7 +25,8 @@ TokenList anadir_token(TokenList l, String token, TipoDeToken tipo) {
   // Crear nodo y copiar el token allí
   TokenNodo *nodo = malloc(sizeof(TokenNodo));
   assert(nodo);
-  nodo->token = str_dup(token);
+  if (token != NULL) nodo->token = str_dup(token);
+  else nodo->token = NULL;
   nodo->tipo = tipo;
   nodo->next = NULL;
 
@@ -57,5 +58,7 @@ void destruir_lista(TokenList lista) {
         free(actual);
         actual = sig;
     }
+    lista->head = lista->tail = NULL;
+    free(lista);
     return;
 }

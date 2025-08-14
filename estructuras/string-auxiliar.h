@@ -31,5 +31,7 @@ String str_dup(const String s);
  */
 String string_a_token (String cadena, String delimitador);
 
+void liberar_string(String cadena);
+
 
 #endif // __STRING_AUXILIAR__

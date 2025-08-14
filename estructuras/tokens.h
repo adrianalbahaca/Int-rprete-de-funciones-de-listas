@@ -29,7 +29,7 @@ typedef struct _TokenNodo {
  * lista, por practicidad al añadir tokens
  */
 
-typedef struct __TokenList {
+typedef struct _TokenList {
   TokenNodo *head;
   TokenNodo *tail;
 } _TokenList;

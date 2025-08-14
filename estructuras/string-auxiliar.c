@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <ctype.h>
 
 const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
 const int primitivas_tam = sizeof(primitivas) / sizeof(primitivas[0]);
@@ -75,4 +76,9 @@ String string_a_token (String cadena, String delimitador) {
 
   return token;
 
+}
+
+void liberar_string(String cadena) {
+  free(cadena);
+  return;
 }

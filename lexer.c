@@ -1,5 +1,5 @@
 #include "lexer.h"
-#include "string-auxiliar.h"
+#include "estructuras/string-auxiliar.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

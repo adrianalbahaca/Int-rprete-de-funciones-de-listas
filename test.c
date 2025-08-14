@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "tokenizer.h"
-#include "ast.h"
+#include "lexer.h"
+#include "estructuras/tokens.h"
 
 const String token[] = {
   "TOKEN_DEFF", "TOKEN_DEFL", "TOKEN_APPLY", "TOKEN_SEARCH", "TOKEN_QUIT",
@@ -9,27 +9,14 @@ const String token[] = {
   "TOKEN_COMA", "TOKEN_PUNTO_COMA", "TOKEN_ANG_ABRE", "TOKEN_ANG_CIERRA", "TOKEN_ERROR", "TOKEN_EOF"
 };
 
-void imprimir_arbol(ASTTree arbol) {
-  if (arbol == NULL) return;
-  else {
-    printf("[%d %s]->", arbol->tipo, arbol->lexema);
-    for (int i = 0; i < CANT_HIJOS; i++) {
-      imprimir_arbol(arbol->hijos[i]);
-    }
-    puts("NULL");
-    return;
-  }
-}
-
 int main(void) {
-    String input = get_input("Inserte un comando ==> ");
-    TokenNodo* tokens = tokenize(input);
-    for (TokenNodo* n = tokens; n != NULL; n = n->sig) {
-        printf("[%s %s]<->", n->token, token[n->tipo]);
+    String input = get_input("==> ");
+    TokenList tokens = tokenize(input);
+    for (TokenNodo* n = tokens->head; n != NULL; n = n->next) {
+      printf("[%s %s]->", token[n->tipo], n->token);
     }
     puts("NULL");
-
-    ASTTree arbol = parse(tokens);
-    imprimir_arbol(arbol);
+    liberar_string(input);
+    destruir_lista(tokens);
     return 0;
 }

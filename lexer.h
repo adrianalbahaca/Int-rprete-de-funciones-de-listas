@@ -13,6 +13,6 @@ String get_input(String mensaje);
  * tokenize: String -> TokenList
  * Tokeniza cada parte del string en una lista de tokens, para después ser procesado
  */
-TokenNodo* tokenize(String tokens);
+TokenList tokenize(String tokens);
 
 #endif /* __TOKENIZER__ */
