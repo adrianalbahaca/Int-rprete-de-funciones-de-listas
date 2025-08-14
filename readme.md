@@ -27,32 +27,6 @@ El comando search genera una función de listas que convierte a la lista L1 en l
 Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;`
 (Notar que pueden haber pares de listas que no tengan solución)
 
-# Cosas a hacer:
- - [x] Diseñar la gramática que leerá el input del usuario y se corroborará que sea correcta
- <!-- Es una gramática libre de contexto. Visto en LFyC (El cual tengo que estudiar para el final) -->
- - [x] Simplificar la gramática creada, sacando terminales y no terminales innecesarios
- <!-- Leer libros sobre el tema mientras estudias LFyC -->
- - [x] Crear una función que reciba cada comando y lo guarde. Será un string que no se sabe cuál es su largo
- <!-- Razonamiento de la función get_string() de CS50 con varios cambios -->
- - [x] Crear una función que tokenize cada comando que escriba el usuario
- <!-- Funciones que no puede declarar el usuario -->
- - [x] Optimizar la estructura que guarda la lista de tokens para ahorrar memoria
- <!-- Puede ser que no necesite darle la estructura que apunta al princio y final de la lista -->
- - [ ] Definir la estructura del AST, de acuerdo a la gramática simplificada
- <!-- Tomar en cuenta los nodos que ya no nos sirven -->
- - [x] Implementar un parser recursivo descendiente 
- <!-- Debe armar el AST a medida de que se ejecuta -->
- - [x] Definir cómo se van a guardar las funciones y las listas
- <!-- Se tienen que usar tablas hash con listas SE -->
- - [ ] Implementar los comandos de guardado de las funciones y las listas ("deff", "defl")
- <!-- Implementación de las tablas hash -->
- - [ ] Implementar cómo se aplica las funciones en las listas ("apply") 
- <!-- Esto debe ser bastante sencillo -->
- - [ ] Implementar el algoritmo de búsqueda entre funciones
- <!-- Truco: BFS con colas -> Vea búsqueda en grafo -->
- - [ ] Implementar el comando "quit"
- <!-- Debe de borrar todos los contenidos de las listas SE y la tabla hash -->
-
  # Al pendiente por separación de archivos
  - lexer.h: Tokeniza el input del usuario y lo guarda en una lista doblemente enlazada
     - dlist.h: Funciones que manejan una lista doblemente enlazada
@@ -61,3 +35,12 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - execute.h: Procesa el AST y ejecuta los comandos
     - tablashash.h: Funciones que procesan una tabla hash
     - slist.h: Funciones que procesan una lista simplemente enlazada
+
+# Cosas por hacer
+ - [ ] Terminar los archivos `tokens.h` y `tokens.c`, que lidia con una lista doblemente enlazada de tokens
+ - [ ] Terminar los archivos `lexer.c` y `lexer.h`, que tokeniza la entrada del usuario
+ - [ ] Terminar los archivos `ast.c` y `ast.h` que guarda la estructura del AST, con sus funciones para manejarlo, añadirle hijos y eliminarlo
+ - [ ] Terminar los archivos `parser.c` y `parser.h`, el parser recursivo descendente, que arma poco a poco el AST acorde a la gramática libre de contexto, y verifica si hay errores. La forma de lidiar con errores es borrando todo el AST y pidiendo el comando de nuevo
+ - [ ] Terminar los archivos `tablas.c` y `tablas.h`, que guarda las estructuras de las tablas hash para guardar las funciones y las listas
+ - [ ] Terminar los archivos `execute.h` y `execute.c` que implementa los comandos usando los parámetros, de acuerdo al AST dado
+ - [ ] Crear una función `main.c` donde se ejecuta todo este parser, y formatear todo de acuerdo a lo pedido
