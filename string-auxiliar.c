@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <assert.h>
 
-const String comandos[] = {"deff", "defl", "apply", "search", "quit"};
 const String primitivas[] = {"0i", "0d", "Si", "Sd", "Di", "Dd"};
-
-const int comandos_tam = sizeof(comandos) / sizeof(comandos[0]);
 const int primitivas_tam = sizeof(primitivas) / sizeof(primitivas[0]);
+
+const String comandos[] = {"deff", "defl", "apply", "search", "quit"};
+const int comandos_tam = sizeof(comandos) / sizeof(comandos[0]);
 
 /**
  * str_dup: String -> String

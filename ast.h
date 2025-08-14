@@ -31,7 +31,7 @@ typedef struct _ASTNodo {
     TipoDeNodo tipo;
     String lexema;
     int num_hijos;
-    struct _ASTNodo* hijos[CANT_HIJOS];
+    struct _ASTNodo* hijos[];
 } ASTNodo;
 
 /**
@@ -45,10 +45,5 @@ typedef ASTNodo* ASTTree;
  * Toma una lista de tokens y la convierte en un árbol de sintáxis abstracto para poder procesarlo
  */
 ASTTree parse(TokenNodo* tokens); // Sentencia ::= Definicion ';' | Aplicacion  ';' | Busqueda ';'
-
-/**
- * 
- */
-void liberar_arbol(ASTTree arbol);
 
 #endif /* __AST__ */

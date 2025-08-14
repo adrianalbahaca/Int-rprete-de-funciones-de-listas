@@ -5,14 +5,8 @@
  * Se declara la lista de tipos de tokens que puede tener cada token
  */
 typedef enum {
-
-  /**
-   * TODO: Necesito que los tokens de comandos estén de primero para que mi código funcione
-   * Hay alguna manera más adecuada para evitar tener que hacer esto, y que no importe dónde los
-   * coloque?
-   */
+  
   TOKEN_DEFF, TOKEN_DEFL, TOKEN_APPLY, TOKEN_SEARCH, TOKEN_QUIT,
-
   TOKEN_DEF, TOKEN_PRIMITIVA, TOKEN_DIGITO,
   TOKEN_IGUAL, TOKEN_COR_ABRE, TOKEN_COR_CIERRA, TOKEN_LLAVE_ABRE, TOKEN_LLAVE_CIERRA,
   TOKEN_COMA,TOKEN_PUNTO_COMA, TOKEN_ANG_ABRE, TOKEN_ANG_CIERRA, TOKEN_ERROR, TOKEN_EOF,

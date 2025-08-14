@@ -53,4 +53,11 @@ Ej: `L1 = [0, 1, 2]; L2 = [1, 2, 3]; => search { L1, L2 }; -> Si Md Si Md Si Md;
  - [ ] Implementar el comando "quit"
  <!-- Debe de borrar todos los contenidos de las listas SE y la tabla hash -->
 
- # Al pendiente por más funciones
+ # Al pendiente por separación de archivos
+ - lexer.h: Tokeniza el input del usuario y lo guarda en una lista doblemente enlazada
+    - dlist.h: Funciones que manejan una lista doblemente enlazada
+ - parser.h: Procesa los tokens y arma el ast apropiado
+    - gtree.h: Funciones que manejan un árbol general
+ - execute.h: Procesa el AST y ejecuta los comandos
+    - tablashash.h: Funciones que procesan una tabla hash
+    - slist.h: Funciones que procesan una lista simplemente enlazada

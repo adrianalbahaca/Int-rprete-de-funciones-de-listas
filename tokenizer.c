@@ -9,7 +9,7 @@
 #include <stdbool.h>
 
 /**
- * Se declara la lista de tokens con una estructura que apunta al principio y fin de la
+ * Se declara la lista de tokens en este archivo con una estructura que apunta al principio y fin de la
  * lista, por practicidad al añadir tokens. Esta estructura es temporal para el proceso de
  * tokenización
  */
@@ -76,7 +76,7 @@ TipoDeToken tipo_simbolo(String token) {
  */
 bool es_comando_valido(String token) {
   for (int i = 0; i < comandos_tam; i++) {
-    if (strcmp(token, comandos[i]) == 0) return true;
+    if (!strcmp(token, comandos[i])) return true;
   }
   return false;
 }
@@ -86,11 +86,12 @@ bool es_comando_valido(String token) {
  * Retorna el tipo de token acorde al tipo de comando dado. Si no es ningún comando válido
  * retorna el TOKEN_ERROR
  */
+/**
+ * TODO: Ver cómo corregir esta función para que no importe dónde esté los tokens en el enum
+ */
 TipoDeToken tipo_comando(String token) {
   for (int i = 0; i < comandos_tam; i++) {
-    if (strcmp(token, comandos[i]) == 0) {
-      return (TipoDeToken)i;
-    }
+    if(!strcmp(token, comandos[i])) return (TipoDeToken)(TOKEN_DEFF + i);
   }
   return TOKEN_ERROR;
 }
@@ -101,7 +102,7 @@ TipoDeToken tipo_comando(String token) {
  */
 bool es_primitiva(String token) {
   for (int i = 0; i < primitivas_tam; i++) {
-    if (strcmp(token, primitivas[i]) == 0) return true;
+    if (!strcmp(token, primitivas[i])) return true;
   }
   return false;
 }

@@ -8,13 +8,13 @@ typedef char* String;
 
 /**
  * Se guarda en arreglos los comandos que permite este parser y las funciones
- * primitivas a usar
+ * primitivas a usar, más sus tamaños respectivamente
  */
 
-extern const String comandos[];
 extern const String primitivas[];
-extern const int comandos_tam;
 extern const int primitivas_tam;
+extern const String comandos[];
+extern const int comandos_tam;
 
 /**
  * str_dup: String -> String
