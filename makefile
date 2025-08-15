@@ -3,6 +3,7 @@ CFLAGS := -Wall -Werror -Wextra -std=c99 -g
 
 test: test.o lexer.o tokens.o string-auxiliar.o
 	$(CC) $(CFLAGS) $^ -o $@
+	make clean
 
 test.o: test.c lexer.h estructuras/tokens.h
 	$(CC) $(CFLAGS) -c $<
