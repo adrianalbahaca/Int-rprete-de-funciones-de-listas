@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
+
 /**
  * crear_arbol: void -> ASTTree
  * Crea un árbol vacío para poco a poco llenarlo
@@ -52,3 +54,8 @@ void destruir_arbol(ASTTree arbol) {
     free(arbol);
     return;
 }
+
+/**
+ * recorrer_arbol: ASTTree OrdenDeRecorrido FuncionVisitante -> void*
+ * Recorre un AST y aplica una función en cada nodo que consigue
+ */
