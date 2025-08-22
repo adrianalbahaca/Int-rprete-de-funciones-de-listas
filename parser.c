@@ -54,62 +54,54 @@ void error(String mensaje, ASTTree arbol) {
 
 /* -------------------------------------------- */
 
+/* Reglas gramaticales */
+
 /**
- * deff: void -> ASTTree
- * Arma poco a poco el AST que representa el comando 'deff'
- * Se representa con la siguiente gramática
  * Deff ::= 'deff' DEF '=' Funcs | 'deff' DEF '=' Repeticion
  */
+ASTTree deff();
 
-ASTTree deff() {
-  // Se chequea por el tipo de token deff por si las moscas
-  if (!match(TOKEN_DEFF))
-    return NULL;
-  ASTTree arbol = crear_arbol();
-  arbol = crear_nodo_arbol(NULL, AST_DEFF);
+/**
+ * Rep ::= Funcs "<" Funcs ">" Funcs
+ */
+ASTTree rep();
 
-  // Luego, se chequea por una definicion apropiada
-  if (!match(TOKEN_DEF)) {
-    error("Definición no válida", arbol);
-    return NULL;
-  }
+/**
+ * Funcs ::= DEF Funcs | PRIMITIVA Funcs | DEF | PRIMITIVA
+ */
+ASTTree funcs();
 
-  ASTNodo *definicion = def(siguiente->prev->token);
-  anadir_hijo(arbol, definicion);
+/**
+ * Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
+ */
+ASTTree defl();
 
-  // Sigue el chequeo del igual
-  if (!match(TOKEN_IGUAL)) {
-    error("Falta el símbolo '='", arbol);
-    return NULL;
-  }
+/**
+ * Elementos ::= DIGITO COMA Elementos | DIGITO | e
+ */
+ASTTree elementos();
 
-  // Finalmente, se chequea si sigue una definicion de funciones adecuada
-  ASTTree funciones = funcs();
+/**
+ * Apply ::= "apply" DEF DEF | "apply" PRIMITIVA DEF | "apply" DEF LISTA | "apply" PRIMITIVA LISTA
+ */
+ASTTree apply();
 
-  if (match(TOKEN_ANG_ABRE)) {
-    ASTTree repeticion = crear_arbol();
-    anadir_hijo(repeticion, funciones);
+/**
+ * Search ::= "search" LLAVE_ABRE Listas LLAVE_CIERRA 
+ */
+ASTTree search();
 
-    ASTTree funciones2 = funcs();
+/**
+ * Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
+ */
+ASTTree listas();
 
-    if (!match(TOKEN_ANG_CIERRA)) {
-      printf("Falta cerrar con '>'. Intente de nuevo");
-      destruir_arbol(funciones);
-      destruir_arbol(arbol);
-      return NULL;
-    }
+/**
+ * Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
+ */
+ASTTree lista();
 
-    anadir_hijo(repeticion, funciones2);
-    ASTTree funciones3 = funcs();
-
-    anadir_hijo(repeticion, funciones3);
-    anadir_hijo(arbol, repeticion);
-  } else {
-    anadir_hijo(arbol, funciones);
-  }
-
-  return arbol;
-}
+/*---------------------------------------------------------------*/
 
 /**
  * parse: TokenList -> ASTTree
@@ -164,7 +156,183 @@ ASTTree parse(TokenList tokens) {
     printf("Parece que hubo un error con el parsing. Intente de nuevo");
   } else {
     siguiente = NULL;
-    destruir_lista(tokens);
   }
+
+  destruir_lista(tokens);
   return ast;
+}
+
+/**
+ * deff: void -> ASTTree
+ * Arma poco a poco el AST que representa el comando 'deff'
+ * Se representa con la siguiente gramática:
+ * Deff ::= 'deff' DEF '=' Funcs | 'deff' DEF '=' Repeticion
+ */
+ASTTree deff() {
+  // Se chequea por el tipo de token deff por si las moscas
+  if (!match(TOKEN_DEFF))
+    return NULL;
+  ASTTree arbol_deff = crear_arbol();
+  arbol_deff = crear_nodo_arbol(NULL, AST_DEFF);
+
+  // Luego, se chequea por una definicion apropiada
+  if (!match(TOKEN_DEF)) {
+    error("Definición no válida\n", arbol_deff);
+    return NULL;
+  }
+
+  ASTNodo *definicion = def(siguiente->prev->token);
+  anadir_hijo(arbol_deff, definicion);
+
+  // Sigue el chequeo del igual
+  if (!match(TOKEN_IGUAL)) {
+    error("Falta el símbolo '='\n", arbol_deff);
+    return NULL;
+  }
+
+  // Finalmente, se chequea si sigue una definicion de funciones adecuada
+  ASTTree arbol_funciones = funcs();
+
+  // En caso de detectar un '<', empezar a considerar una función repetición
+  if (match(TOKEN_ANG_ABRE)) {
+    ASTTree arbol_repeticion = crear_arbol();
+    anadir_hijo(arbol_repeticion, arbol_funciones);
+
+    ASTTree arbol_funciones2 = funcs();
+
+    if (!match(TOKEN_ANG_CIERRA)) {
+      printf("Falta cerrar con '>'. Intente de nuevo\n");
+      destruir_arbol(arbol_funciones);
+      destruir_arbol(arbol_deff);
+      return NULL;
+    }
+
+    anadir_hijo(arbol_repeticion, arbol_funciones2);
+
+    ASTTree arbol_funciones3 = funcs();
+    anadir_hijo(arbol_repeticion, arbol_funciones3);
+    anadir_hijo(arbol_deff, arbol_repeticion);
+
+  } else {
+    anadir_hijo(arbol_deff, arbol_funciones);
+  }
+
+  return arbol_deff;
+}
+
+/**
+ * defl: void -> ASTTree
+ * Arma un AST que representa el comando 'defl'
+ * Se representa con la siguiente gramática:
+ * Defl ::= "defl" DEF IGUAL COR_ABRE Elementos COR_CIERRA
+ */
+ASTTree defl() {
+  // Se chequea que el tipo sea el adecuado
+  if (!match(TOKEN_DEFL))
+    return NULL;
+  ASTTree arbol_defl = crear_arbol();
+  arbol_defl = crear_nodo_arbol(NULL, AST_DEFL);
+
+  // Luego se revisa si se tiene una definición correcta
+  ASTNodo *nodo_def = def();
+  if (nodo_def == NULL) {
+    error("Definición incorrecta\n", arbol_defl);
+    return NULL;
+  }
+  anadir_hijo(arbol_defl, nodo_def);
+
+  // Luego, se verifica que haya un símbolo '='
+  if (!match(TOKEN_IGUAL)) {
+    error("Falta el símbolo '='\n", arbol_defl);
+    return NULL;
+  }
+
+  // Se verifica que se abra con un '['
+  if (!match(TOKEN_COR_ABRE)) {
+    error("No se abre la lista con '['\n", arbol_defl);
+    return NULL;
+  }
+
+  ASTNodo* arbol_elementos = elementos();
+  anadir_hijo(arbol_defl, arbol_defl);
+
+  if(!match(TOKEN_COR_CIERRA)) {
+    error("No se ha cerrado con ']'\n", arbol_defl);
+    return NULL;
+  }
+
+  return arbol_defl;
+}
+
+/**
+ * apply: void -> ASTTree
+ * Arma un AST que representa el comando 'apply'
+ * Se representa con la siguiente gramática:
+ * Apply ::= "apply" DEF DEF | "apply" PRIMITIVA DEF | "apply" DEF LISTA | "apply" PRIMITIVA LISTA
+ */
+ASTTree apply() {
+  if(!match(TOKEN_APPLY)) 
+    return NULL;
+  ASTTree arbol_apply = crear_arbol();
+  arbol_apply = crear_nodo_arbol(NULL, AST_APPLY);
+  
+  // Primero, verifica que use una Definición o una Primitiva
+  if(match(TOKEN_DEF)) {
+    ASTNodo* nodo_def = crear_nodo_arbol(siguiente->prev->token, AST_DEF);
+    anadir_hijo(arbol_apply, nodo_def);
+  }
+  else if(match(TOKEN_PRIMITIVA)) {
+    ASTNodo* nodo_prim = crear_nodo_arbol(siguiente->prev->token, AST_PRIMITIVA);
+    anadir_hijo(arbol_apply, nodo_prim);
+  }
+  else {
+    error("Definición de función no válida\n", arbol_apply);
+    return NULL;
+  }
+
+  // Luego, verifica si es un tipo de lista válida
+  if(match(TOKEN_DEF)) {
+    ASTNodo* nodo_def = crear_nodo_arbol(siguiente->prev->token, AST_DEF);
+    anadir_hijo(arbol_apply, nodo_def);
+  }
+  else if(match(TOKEN_COR_ABRE)) {
+    ASTTree arbol_elementos = elementos();
+    anadir_hijo(arbol_apply, arbol_elementos);
+    if (!match(TOKEN_COR_CIERRA)) {
+      error("No se ha cerrado con ']'", arbol_apply);
+      return NULL;
+    }
+  }
+  else {
+    error("No se definió de forma adecuada una lista a aplicar la función", arbol_apply);
+    return NULL;
+  }
+}
+
+/**
+ * search: void -> ASTTree
+ * Crea un arbol AST que representa el comando 'search'
+ * La gramática que sigue es la siguiente:
+ * Search ::= "search" LLAVE_ABRE Listas LLAVE_CIERRA 
+ */
+ASTTree search() {
+  if(!match(TOKEN_SEARCH))
+    return NULL;
+  ASTTree arbol_search = crear_arbol();
+  arbol_search = crear_nodo_arbol(NULL, AST_SEARCH);
+
+  if(!match(TOKEN_LLAVE_ABRE)) {
+    error("No se colocó las funciones en '{}'\n", arbol_search);
+    return NULL;
+  }
+
+  ASTTree arbol_listas = listas();
+  anadir_hijo(arbol_search, arbol_listas);
+  
+  if(!match(TOKEN_LLAVE_CIERRA)) {
+    error("No se cerró con '}'\n", arbol_search);
+    return NULL;
+  }
+
+  return arbol_search;
 }
