@@ -56,7 +56,7 @@ void error(String mensaje, ASTTree arbol) {
 /* Reglas gramaticales */
 
 /**
- * Deff ::= 'deff' DEF '=' Funcs | 'deff' DEF '=' Repeticion
+ * Deff ::= 'deff' DEF '=' Funcs | 'deff' DEF '=' Funcs "<" Funcs ">" Funcs
  */
 ASTTree deff();
 
@@ -86,12 +86,12 @@ ASTTree apply();
 ASTTree search();
 
 /**
- * Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
+ * Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista #
  */
 ASTTree listas();
 
 /**
- * Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
+ * Lista ::= DEF | COR_ABRE Elementos COR_CIERRA #
  */
 ASTTree lista();
 
@@ -171,54 +171,58 @@ ASTTree deff() {
   // Se chequea por el tipo de token deff por si las moscas
   if (!match(TOKEN_DEFF))
     return NULL;
-  ASTTree arbol_deff = crear_arbol();
-  arbol_deff = crear_nodo_arbol(NULL, AST_DEFF);
+  ASTTree arbolDeff = crear_arbol();
+  arbolDeff = crear_nodo_arbol(NULL, AST_DEFF);
   next(NULL);
 
   // Luego, se chequea por una definicion apropiada
   if (!match(TOKEN_DEF)) {
-    error("Definición no válida\n", arbol_deff);
+    error("Definición no válida\n", arbolDeff);
     return NULL;
   }
 
-  ASTNodo *definicion = def(siguiente->token);
-  anadir_hijo(arbol_deff, definicion);
+  ASTNodo *nodoDef = def(siguiente->token);
+  if (nodoDef == NULL) {
+    error("Definición incorrecta\n", arbolDeff);
+    return NULL;
+  }
+  anadir_hijo(arbolDeff, nodoDef);
   next(NULL);
 
   // Sigue el chequeo del igual
   if (!match(TOKEN_IGUAL)) {
-    error("Falta el símbolo '='\n", arbol_deff);
+    error("Falta el símbolo '='\n", arbolDeff);
     return NULL;
   }
   next(NULL);
 
   // Finalmente, se chequea si sigue una definicion de funciones adecuada
-  ASTTree arbol_funciones = funcs();
+  ASTTree arbolFunciones = funcs();
 
   // En caso de detectar un '<', empezar a considerar una función repetición
   if (match(TOKEN_ANG_ABRE)) {
-    ASTTree arbol_repeticion = crear_arbol();
-    anadir_hijo(arbol_repeticion, arbol_funciones);
-    anadir_hijo(arbol_deff, arbol_repeticion);
+    ASTTree arbolRep = crear_arbol();
+    anadir_hijo(arbolRep, arbolFunciones);
+    anadir_hijo(arbolDeff, arbolRep);
     next(NULL);
 
-    ASTTree arbol_funciones2 = funcs();
-    anadir_hijo(arbol_repeticion, arbol_funciones2);
+    ASTTree arbolFunciones2 = funcs();
+    anadir_hijo(arbolRep, arbolFunciones2);
 
     if (!match(TOKEN_ANG_CIERRA)) {
-      error("Falta cerrar con '>'. Intente de nuevo\n", arbol_deff);
+      error("Falta cerrar con '>'. Intente de nuevo\n", arbolDeff);
       return NULL;
     }
     next(NULL);
 
-    ASTTree arbol_funciones3 = funcs();
-    anadir_hijo(arbol_repeticion, arbol_funciones3);
+    ASTTree arbolFunciones3 = funcs();
+    anadir_hijo(arbolRep, arbolFunciones3);
 
   } else {
-    anadir_hijo(arbol_deff, arbol_funciones);
+    anadir_hijo(arbolDeff, arbolFunciones);
   }
 
-  return arbol_deff;
+  return arbolDeff;
 }
 
 /**
@@ -231,44 +235,44 @@ ASTTree defl() {
   // Se chequea que el tipo sea el adecuado
   if (!match(TOKEN_DEFL))
     return NULL;
-  ASTTree arbol_defl = crear_arbol();
-  arbol_defl = crear_nodo_arbol(NULL, AST_DEFL);
+  ASTTree arbolDefl = crear_arbol();
+  arbolDefl = crear_nodo_arbol(NULL, AST_DEFL);
   next(NULL);
 
   // Luego se revisa si se tiene una definición correcta
-  ASTNodo *nodo_def = def(siguiente->token);
-  if (nodo_def == NULL) {
-    error("Definición incorrecta\n", arbol_defl);
+  ASTNodo *nodoDef = def(siguiente->token);
+  if (nodoDef == NULL) {
+    error("Definición incorrecta\n", arbolDefl);
     return NULL;
   }
-  anadir_hijo(arbol_defl, nodo_def);
+  anadir_hijo(arbolDefl, nodoDef);
   next(NULL);
 
   // Luego, se verifica que haya un símbolo '='
   if (!match(TOKEN_IGUAL)) {
-    error("Falta el símbolo '='\n", arbol_defl);
+    error("Falta el símbolo '='\n", arbolDefl);
     return NULL;
   }
   next(NULL);
 
   // Se verifica que se abra con un '['
   if (!match(TOKEN_COR_ABRE)) {
-    error("No se ha abierto la lista con '['\n", arbol_defl);
+    error("No se ha abierto la lista con '['\n", arbolDefl);
     return NULL;
   }
   next(NULL);
 
-  ASTNodo* arbol_elementos = elementos();
-  anadir_hijo(arbol_defl, arbol_defl);
+  ASTNodo* arbolElementos = elementos();
+  anadir_hijo(arbolDefl, arbolElementos);
   next(NULL);
 
   if(!match(TOKEN_COR_CIERRA)) {
-    error("No se ha cerrado con ']'\n", arbol_defl);
+    error("No se ha cerrado con ']'\n", arbolDefl);
     return NULL;
   }
   next(NULL);
 
-  return arbol_defl;
+  return arbolDefl;
 }
 
 /**
@@ -280,46 +284,50 @@ ASTTree defl() {
 ASTTree apply() {
   if(!match(TOKEN_APPLY)) 
     return NULL;
-  ASTTree arbol_apply = crear_arbol();
-  arbol_apply = crear_nodo_arbol(NULL, AST_APPLY);
+  ASTTree arbolApply = crear_arbol();
+  arbolApply = crear_nodo_arbol(NULL, AST_APPLY);
   next(NULL);
   
   // Primero, verifica que use una Definición o una Primitiva
   if(match(TOKEN_DEF)) {
-    ASTNodo* nodo_def = def(siguiente->token);
-    anadir_hijo(arbol_apply, nodo_def);
+    ASTNodo* nodoDef = def(siguiente->token);
+    anadir_hijo(arbolApply, nodoDef);
     next(NULL);
   }
   else if(match(TOKEN_PRIMITIVA)) {
-    ASTNodo* nodo_prim = primitiva(siguiente->token);
-    anadir_hijo(arbol_apply, nodo_prim);
+    ASTNodo* nodoPrim = primitiva(siguiente->token);
+    anadir_hijo(arbolApply, nodoPrim);
     next(NULL);
   }
   else {
-    error("Definición de función no válida\n", arbol_apply);
+    error("Definición de función no válida\n", arbolApply);
     return NULL;
   }
 
   // Luego, verifica si es un tipo de lista válida
   if(match(TOKEN_DEF)) {
-    ASTNodo* nodo_def = def(siguiente->token);
+    ASTNodo* nodoDef = def(siguiente->token);
     next(NULL);
   }
   else if(match(TOKEN_COR_ABRE)) {
-    ASTTree arbol_elementos = elementos();
-    anadir_hijo(arbol_apply, arbol_elementos);
+    next(NULL);
+
+    ASTTree arbolElementos = elementos();
+    anadir_hijo(arbolApply, arbolElementos);
     next(NULL);
 
     if (!match(TOKEN_COR_CIERRA)) {
-      error("No se ha cerrado con ']'", arbol_apply);
+      error("No se ha cerrado con ']'", arbolApply);
       return NULL;
     }
     next(NULL);
   }
   else {
-    error("No se definió de forma adecuada una lista a aplicar la función", arbol_apply);
+    error("No se definió de forma adecuada una lista a aplicar la función", arbolApply);
     return NULL;
   }
+
+  return arbolApply;
 }
 
 /**
@@ -331,23 +339,23 @@ ASTTree apply() {
 ASTTree search() {
   if(!match(TOKEN_SEARCH))
     return NULL;
-  ASTTree arbol_search = crear_arbol();
-  arbol_search = crear_nodo_arbol(NULL, AST_SEARCH);
+  ASTTree arbolSearch = crear_arbol();
+  arbolSearch = crear_nodo_arbol(NULL, AST_SEARCH);
 
   if(!match(TOKEN_LLAVE_ABRE)) {
-    error("No se colocó las funciones en '{}'\n", arbol_search);
+    error("No se colocó las funciones en '{}'\n", arbolSearch);
     return NULL;
   }
 
-  ASTTree arbol_listas = listas();
-  anadir_hijo(arbol_search, arbol_listas);
+  ASTTree arbolListas = listas();
+  anadir_hijo(arbolSearch, arbolListas);
   
   if(!match(TOKEN_LLAVE_CIERRA)) {
-    error("No se cerró con '}'\n", arbol_search);
+    error("No se cerró con '}'\n", arbolSearch);
     return NULL;
   }
 
-  return arbol_search;
+  return arbolSearch;
 }
 
 /**
@@ -357,24 +365,30 @@ ASTTree search() {
  * Funcs ::= DEF Funcs | PRIMITIVA Funcs | DEF | PRIMITIVA
  */
 ASTTree funcs() {
-  ASTTree nodo_funcion = crear_arbol();
+  ASTTree nodoFuncion = crear_arbol();
 
   if (match(TOKEN_DEF)) {
-    nodo_funcion = crear_nodo_arbol(siguiente->prev->token, AST_DEF);
-    ASTTree nodo_siguiente = funcs();
-    anadir_hijo(nodo_funcion, nodo_siguiente);
-    return nodo_funcion;
+    nodoFuncion = def(siguiente->token);
+    next(NULL);
+
+    ASTTree nodoSiguiente = funcs();
+    anadir_hijo(nodoFuncion, nodoSiguiente);
+
+    return nodoFuncion;
   }
 
   else if (match(TOKEN_PRIMITIVA)) {
-    nodo_funcion = crear_nodo_arbol(siguiente->prev->token, AST_PRIMITIVA);
-    ASTTree nodo_siguiente = funcs();
-    anadir_hijo(nodo_funcion, nodo_siguiente);
-    return nodo_funcion;
+    nodoFuncion = primitiva(siguiente->token);
+    next(NULL);
+
+    ASTTree nodoSiguiente = funcs();
+    anadir_hijo(nodoFuncion, nodoSiguiente);
+
+    return nodoFuncion;
   }
 
   else {
-    return nodo_funcion;
+    return nodoFuncion;
   }
   
 }
@@ -386,20 +400,46 @@ ASTTree funcs() {
  * Elementos ::= DIGITO COMA Elementos | DIGITO | e
  */
 ASTTree elementos() {
-  ASTNodo* nodo_digito = crear_arbol();
+  ASTNodo* nodoDigito = crear_arbol();
   if (match(TOKEN_DIGITO)) {
-    nodo_digito = crear_nodo_arbol(siguiente->token, AST_DIGITO);
+    nodoDigito = crear_nodo_arbol(siguiente->token, AST_DIGITO);
     next(NULL);
   }
 
   if (match(TOKEN_COMA)) {
-    ASTTree arbol_digitos = elementos();
-    anadir_hijo(arbol_digitos, nodo_digito);
+    ASTTree arbolDigitos = elementos();
+    anadir_hijo(arbolDigitos, nodoDigito);
     next(NULL);
-    return arbol_digitos;
+
+    return arbolDigitos;
   }
   else {
-    return nodo_digito;
+    return nodoDigito;
   }
 }
 
+/**
+ * listas: void -> ASTTree
+ * Crea un arbol que contiene cada par de listas
+ * Sigue la siguiente regla gramatical:
+ * Listas ::= Lista COMA Lista PUNTO_COMA Listas | Lista COMA Lista
+ */
+ASTTree listas() {
+  ASTTree arbolListas = crear_arbol();
+  arbolListas = crear_nodo_arbol(NULL, AST_LISTAS);
+
+  ASTNodo* nodoLista1 = lista();
+  anadir_hijo(arbolListas, nodoLista1);
+  next(NULL);
+
+  ASTNodo* nodoLista2 = lista();
+  anadir_hijo(arbolListas, nodoLista2);
+  next(NULL);
+
+  if (match(TOKEN_COMA)) {
+    ASTTree arbolListasSig = listas();
+    anadir_hijo(arbolListas, arbolListasSig);
+  }
+
+  return arbolListas;
+}
