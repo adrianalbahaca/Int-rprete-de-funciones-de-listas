@@ -443,3 +443,13 @@ ASTTree listas() {
 
   return arbolListas;
 }
+
+/**
+ * lista: void -> ASTTree
+ * Crea o un nodo de tipo definición o una lista nueva
+ * Sigue la siguiente regla gramatical:
+ * Lista ::= DEF | COR_ABRE Elementos COR_CIERRA
+ */
+ASTTree lista() {
+  ASTTree arbolLista = crear_arbol();
+}
