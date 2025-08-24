@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-
-
 /**
  * crear_arbol: void -> ASTTree
  * Crea un árbol vacío para poco a poco llenarlo

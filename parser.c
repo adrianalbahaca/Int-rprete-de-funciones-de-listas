@@ -452,4 +452,22 @@ ASTTree listas() {
  */
 ASTTree lista() {
   ASTTree arbolLista = crear_arbol();
+  
+  if(match(TOKEN_DEF)) {
+    arbolLista = def();
+  }
+  else if (match(TOKEN_COR_ABRE)) {
+    next(NULL);
+    arbolLista = elementos();
+    if (!match(TOKEN_COR_CIERRA)) {
+      error("No se cerró con ']'\n", arbolLista);
+      return NULL;
+    }
+  }
+  else {
+    error("No se ha definido una lista adecuadamente\n", arbolLista);
+    return NULL;
+  }
+
+  return arbolLista;
 }
